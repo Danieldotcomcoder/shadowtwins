@@ -1,0 +1,6 @@
+# LF everywhere so file hashes are identical on every platform.
+* text=auto eol=lf
+# Hashed release artifacts: never let git touch their bytes.
+packs/** -text
+contracts/fixtures/** -text
+*.png binary
