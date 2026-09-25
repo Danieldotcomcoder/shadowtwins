@@ -16,3 +16,7 @@ frontend/dist/
 .env
 # Notion export of the coordination hub (source of truth lives in Notion)
 Shadow Twins — Project Hub/
+/.e2e-data/
+frontend/test-results/
+frontend/playwright-report/
+*.tsbuildinfo
