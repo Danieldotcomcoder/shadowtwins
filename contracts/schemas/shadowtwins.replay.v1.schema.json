@@ -1,0 +1,769 @@
+{
+  "$defs": {
+    "Check": {
+      "additionalProperties": false,
+      "properties": {
+        "cells": {
+          "description": "Offending cells, if any.",
+          "items": {
+            "description": "Cell (x, y, z); x = column, y = row, z = layer (0 = bottom).",
+            "maxItems": 3,
+            "minItems": 3,
+            "prefixItems": [
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              }
+            ],
+            "type": "array"
+          },
+          "title": "Cells",
+          "type": "array"
+        },
+        "code": {
+          "$ref": "#/$defs/CheckCode"
+        },
+        "ids": {
+          "description": "Offending editable IDs, if any.",
+          "items": {
+            "type": "integer"
+          },
+          "title": "Ids",
+          "type": "array"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/CheckStatus"
+        }
+      },
+      "required": [
+        "code",
+        "status",
+        "message"
+      ],
+      "title": "Check",
+      "type": "object"
+    },
+    "CheckCode": {
+      "enum": [
+        "parse",
+        "id_types",
+        "no_duplicates",
+        "source_occupancy",
+        "equal_counts",
+        "budget",
+        "immutable_cells",
+        "silhouette_x",
+        "silhouette_y",
+        "silhouette_z",
+        "solid_connected"
+      ],
+      "title": "CheckCode",
+      "type": "string"
+    },
+    "CheckStatus": {
+      "enum": [
+        "pass",
+        "fail",
+        "skipped"
+      ],
+      "title": "CheckStatus",
+      "type": "string"
+    },
+    "Component": {
+      "additionalProperties": false,
+      "properties": {
+        "cells": {
+          "items": {
+            "description": "Cell (x, y, z); x = column, y = row, z = layer (0 = bottom).",
+            "maxItems": 3,
+            "minItems": 3,
+            "prefixItems": [
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              }
+            ],
+            "type": "array"
+          },
+          "title": "Cells",
+          "type": "array"
+        },
+        "entrances": {
+          "description": "Entrance indices inside it.",
+          "items": {
+            "type": "integer"
+          },
+          "title": "Entrances",
+          "type": "array"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "id",
+        "cells"
+      ],
+      "title": "Component",
+      "type": "object"
+    },
+    "Edit": {
+      "additionalProperties": false,
+      "description": "Relocation answer: ``remove`` and ``add`` are editable-cell IDs, applied simultaneously.",
+      "properties": {
+        "add": {
+          "items": {
+            "type": "integer"
+          },
+          "maxItems": 64,
+          "title": "Add",
+          "type": "array"
+        },
+        "remove": {
+          "items": {
+            "type": "integer"
+          },
+          "maxItems": 64,
+          "title": "Remove",
+          "type": "array"
+        }
+      },
+      "required": [
+        "remove",
+        "add"
+      ],
+      "title": "Edit",
+      "type": "object"
+    },
+    "EditableCellInfo": {
+      "additionalProperties": false,
+      "properties": {
+        "cell": {
+          "description": "Cell (x, y, z); x = column, y = row, z = layer (0 = bottom).",
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "maximum": 3,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "maximum": 3,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "maximum": 3,
+              "minimum": 0,
+              "type": "integer"
+            }
+          ],
+          "title": "Cell",
+          "type": "array"
+        },
+        "id": {
+          "title": "Id",
+          "type": "integer"
+        },
+        "originally_solid": {
+          "title": "Originally Solid",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "cell",
+        "originally_solid"
+      ],
+      "title": "EditableCellInfo",
+      "type": "object"
+    },
+    "EntranceInfo": {
+      "additionalProperties": false,
+      "properties": {
+        "cell": {
+          "description": "Cell (x, y, z); x = column, y = row, z = layer (0 = bottom).",
+          "maxItems": 3,
+          "minItems": 3,
+          "prefixItems": [
+            {
+              "maximum": 3,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "maximum": 3,
+              "minimum": 0,
+              "type": "integer"
+            },
+            {
+              "maximum": 3,
+              "minimum": 0,
+              "type": "integer"
+            }
+          ],
+          "title": "Cell",
+          "type": "array"
+        },
+        "index": {
+          "title": "Index",
+          "type": "integer"
+        },
+        "label": {
+          "title": "Label",
+          "type": "string"
+        }
+      },
+      "required": [
+        "index",
+        "label",
+        "cell"
+      ],
+      "title": "EntranceInfo",
+      "type": "object"
+    },
+    "GridState": {
+      "additionalProperties": false,
+      "properties": {
+        "empty_components": {
+          "description": "Components of empty cells that contain at least one entrance.",
+          "items": {
+            "$ref": "#/$defs/Component"
+          },
+          "title": "Empty Components",
+          "type": "array"
+        },
+        "entrance_component": {
+          "description": "Component id per entrance index.",
+          "items": {
+            "type": "integer"
+          },
+          "title": "Entrance Component",
+          "type": "array"
+        },
+        "occupancy": {
+          "title": "Occupancy",
+          "type": "string"
+        },
+        "other_empty_cells": {
+          "description": "Empty cells in components containing no entrance (cavities).",
+          "items": {
+            "description": "Cell (x, y, z); x = column, y = row, z = layer (0 = bottom).",
+            "maxItems": 3,
+            "minItems": 3,
+            "prefixItems": [
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              }
+            ],
+            "type": "array"
+          },
+          "title": "Other Empty Cells",
+          "type": "array"
+        },
+        "paths": {
+          "description": "One path per connected entrance pair (i < j).",
+          "items": {
+            "$ref": "#/$defs/PathTrace"
+          },
+          "title": "Paths",
+          "type": "array"
+        },
+        "silhouettes": {
+          "$ref": "#/$defs/Silhouettes"
+        },
+        "solid_components": {
+          "items": {
+            "$ref": "#/$defs/Component"
+          },
+          "title": "Solid Components",
+          "type": "array"
+        }
+      },
+      "required": [
+        "occupancy",
+        "silhouettes",
+        "empty_components",
+        "other_empty_cells",
+        "solid_components",
+        "entrance_component",
+        "paths"
+      ],
+      "title": "GridState",
+      "type": "object"
+    },
+    "InvalidCategory": {
+      "enum": [
+        "malformed_json",
+        "invalid_ids_or_types",
+        "duplicate_ids",
+        "wrong_source_occupancy",
+        "unequal_edit_counts",
+        "budget_exceeded",
+        "immutable_cell_modified",
+        "silhouette_changed",
+        "solid_disconnected",
+        "refusal",
+        "truncated"
+      ],
+      "title": "InvalidCategory",
+      "type": "string"
+    },
+    "OutcomeView": {
+      "additionalProperties": false,
+      "description": "One final object (the model's answer or the optimum) relative to the original.",
+      "properties": {
+        "added": {
+          "items": {
+            "description": "Cell (x, y, z); x = column, y = row, z = layer (0 = bottom).",
+            "maxItems": 3,
+            "minItems": 3,
+            "prefixItems": [
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              }
+            ],
+            "type": "array"
+          },
+          "title": "Added",
+          "type": "array"
+        },
+        "category": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/InvalidCategory"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "checks": {
+          "items": {
+            "$ref": "#/$defs/Check"
+          },
+          "title": "Checks",
+          "type": "array"
+        },
+        "closed": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Closed"
+        },
+        "edit": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Edit"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "final": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/GridState"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Null when no final object can be constructed."
+        },
+        "label": {
+          "enum": [
+            "model",
+            "optimal",
+            "noop",
+            "practice",
+            "custom"
+          ],
+          "title": "Label",
+          "type": "string"
+        },
+        "move_count": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Move Count"
+        },
+        "opened": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Opened"
+        },
+        "pairs": {
+          "items": {
+            "$ref": "#/$defs/PairStatus"
+          },
+          "title": "Pairs",
+          "type": "array"
+        },
+        "raw_objective": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Raw Objective"
+        },
+        "removed": {
+          "items": {
+            "description": "Cell (x, y, z); x = column, y = row, z = layer (0 = bottom).",
+            "maxItems": 3,
+            "minItems": 3,
+            "prefixItems": [
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              }
+            ],
+            "type": "array"
+          },
+          "title": "Removed",
+          "type": "array"
+        },
+        "score": {
+          "title": "Score",
+          "type": "number"
+        },
+        "silhouette_mismatch": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Silhouettes"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "1 where final differs from original."
+        },
+        "v_star": {
+          "title": "V Star",
+          "type": "integer"
+        },
+        "valid": {
+          "title": "Valid",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "label",
+        "edit",
+        "valid",
+        "category",
+        "checks",
+        "final",
+        "removed",
+        "added",
+        "silhouette_mismatch",
+        "pairs",
+        "raw_objective",
+        "v_star",
+        "score",
+        "opened",
+        "closed",
+        "move_count"
+      ],
+      "title": "OutcomeView",
+      "type": "object"
+    },
+    "PairChange": {
+      "enum": [
+        "opened",
+        "closed",
+        "unchanged"
+      ],
+      "title": "PairChange",
+      "type": "string"
+    },
+    "PairStatus": {
+      "additionalProperties": false,
+      "properties": {
+        "change": {
+          "$ref": "#/$defs/PairChange"
+        },
+        "final": {
+          "title": "Final",
+          "type": "boolean"
+        },
+        "i": {
+          "title": "I",
+          "type": "integer"
+        },
+        "j": {
+          "title": "J",
+          "type": "integer"
+        },
+        "original": {
+          "title": "Original",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "i",
+        "j",
+        "original",
+        "final",
+        "change"
+      ],
+      "title": "PairStatus",
+      "type": "object"
+    },
+    "PathTrace": {
+      "additionalProperties": false,
+      "properties": {
+        "cells": {
+          "description": "Deterministic shortest empty-cell path from i to j.",
+          "items": {
+            "description": "Cell (x, y, z); x = column, y = row, z = layer (0 = bottom).",
+            "maxItems": 3,
+            "minItems": 3,
+            "prefixItems": [
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              }
+            ],
+            "type": "array"
+          },
+          "title": "Cells",
+          "type": "array"
+        },
+        "i": {
+          "title": "I",
+          "type": "integer"
+        },
+        "j": {
+          "title": "J",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "i",
+        "j",
+        "cells"
+      ],
+      "title": "PathTrace",
+      "type": "object"
+    },
+    "Silhouettes": {
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "description": "View along x: rows[z][y].",
+          "items": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "title": "X",
+          "type": "array"
+        },
+        "y": {
+          "description": "View along y: rows[z][x].",
+          "items": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "title": "Y",
+          "type": "array"
+        },
+        "z": {
+          "description": "View along z: rows[y][x].",
+          "items": {
+            "items": {
+              "type": "integer"
+            },
+            "type": "array"
+          },
+          "title": "Z",
+          "type": "array"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "z"
+      ],
+      "title": "Silhouettes",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "budget": {
+      "title": "Budget",
+      "type": "integer"
+    },
+    "certificate_hash": {
+      "title": "Certificate Hash",
+      "type": "string"
+    },
+    "editable": {
+      "items": {
+        "$ref": "#/$defs/EditableCellInfo"
+      },
+      "title": "Editable",
+      "type": "array"
+    },
+    "entrances": {
+      "items": {
+        "$ref": "#/$defs/EntranceInfo"
+      },
+      "title": "Entrances",
+      "type": "array"
+    },
+    "evaluator_version": {
+      "title": "Evaluator Version",
+      "type": "string"
+    },
+    "instance_hash": {
+      "title": "Instance Hash",
+      "type": "string"
+    },
+    "instance_id": {
+      "title": "Instance Id",
+      "type": "string"
+    },
+    "model": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/OutcomeView"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "optimal": {
+      "$ref": "#/$defs/OutcomeView"
+    },
+    "original": {
+      "$ref": "#/$defs/GridState"
+    },
+    "replay_version": {
+      "title": "Replay Version",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "shadowtwins.replay.v1",
+      "default": "shadowtwins.replay.v1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "replay_version",
+    "evaluator_version",
+    "instance_id",
+    "instance_hash",
+    "certificate_hash",
+    "budget",
+    "editable",
+    "entrances",
+    "original",
+    "optimal"
+  ],
+  "title": "ShadowTwinsReplay",
+  "type": "object"
+}

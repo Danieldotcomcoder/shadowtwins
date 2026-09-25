@@ -1,0 +1,10 @@
+{
+  "instance_id": "fx-shadow-gate",
+  "case": "provider-refusal",
+  "raw_text": "",
+  "completion_meta": {
+    "finish_reason": "content_filter",
+    "native_finish_reason": null,
+    "refusal": "Content blocked"
+  }
+}

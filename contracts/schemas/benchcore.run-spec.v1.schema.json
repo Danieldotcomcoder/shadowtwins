@@ -1,0 +1,80 @@
+{
+  "$defs": {
+    "RunMode": {
+      "enum": [
+        "quick_check",
+        "standard",
+        "repeated"
+      ],
+      "title": "RunMode",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "description": "Operator request to start a run.",
+  "properties": {
+    "allow_unknown_pricing": {
+      "default": false,
+      "description": "Explicit unranked override to dispatch when model pricing is unknown.",
+      "title": "Allow Unknown Pricing",
+      "type": "boolean"
+    },
+    "concurrency": {
+      "default": 2,
+      "maximum": 16,
+      "minimum": 1,
+      "title": "Concurrency",
+      "type": "integer"
+    },
+    "mode": {
+      "$ref": "#/$defs/RunMode"
+    },
+    "model_id": {
+      "title": "Model Id",
+      "type": "string"
+    },
+    "note": {
+      "anyOf": [
+        {
+          "maxLength": 500,
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Note"
+    },
+    "profile_id": {
+      "title": "Profile Id",
+      "type": "string"
+    },
+    "provider": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Pinned provider endpoint slug, where supported.",
+      "title": "Provider"
+    },
+    "spend_limit_usd": {
+      "exclusiveMinimum": 0,
+      "title": "Spend Limit Usd",
+      "type": "number"
+    }
+  },
+  "required": [
+    "model_id",
+    "profile_id",
+    "mode",
+    "spend_limit_usd"
+  ],
+  "title": "RunSpec",
+  "type": "object"
+}

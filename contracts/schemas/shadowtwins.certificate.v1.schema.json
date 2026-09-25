@@ -1,0 +1,388 @@
+{
+  "$defs": {
+    "CertificateCore": {
+      "additionalProperties": false,
+      "description": "Deterministic content of a certificate. Hashed as ``core_hash``.",
+      "properties": {
+        "admissible": {
+          "title": "Admissible",
+          "type": "boolean"
+        },
+        "best_witness": {
+          "$ref": "#/$defs/Witness",
+          "description": "Lexicographically first optimum (fewest moves)."
+        },
+        "budget": {
+          "title": "Budget",
+          "type": "integer"
+        },
+        "constraint_totals": {
+          "$ref": "#/$defs/ConstraintTotals"
+        },
+        "empty_editable": {
+          "description": "e: editable cells empty in the original.",
+          "title": "Empty Editable",
+          "type": "integer"
+        },
+        "enumerated_count": {
+          "title": "Enumerated Count",
+          "type": "integer"
+        },
+        "exhaustive": {
+          "const": true,
+          "default": true,
+          "title": "Exhaustive",
+          "type": "boolean"
+        },
+        "expected_enumerated_count": {
+          "description": "sum_r C(s,r) C(e,r), r <= min(b,s,e).",
+          "title": "Expected Enumerated Count",
+          "type": "integer"
+        },
+        "histogram": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "description": "Legal candidates by objective value.",
+          "title": "Histogram",
+          "type": "object"
+        },
+        "histogram_by_moves": {
+          "additionalProperties": {
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "type": "object"
+          },
+          "description": "Legal candidates by move count, then objective value.",
+          "title": "Histogram By Moves",
+          "type": "object"
+        },
+        "inadmissible_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Inadmissible Reason"
+        },
+        "instance_hash": {
+          "title": "Instance Hash",
+          "type": "string"
+        },
+        "instance_id": {
+          "title": "Instance Id",
+          "type": "string"
+        },
+        "legal_count": {
+          "title": "Legal Count",
+          "type": "integer"
+        },
+        "min_moves_for_optimum": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Min Moves For Optimum"
+        },
+        "no_shadow": {
+          "$ref": "#/$defs/NoShadowAblation"
+        },
+        "optimal_count": {
+          "title": "Optimal Count",
+          "type": "integer"
+        },
+        "rejections": {
+          "$ref": "#/$defs/RejectionCounts"
+        },
+        "solid_editable": {
+          "description": "s: editable cells solid in the original.",
+          "title": "Solid Editable",
+          "type": "integer"
+        },
+        "v_min": {
+          "title": "V Min",
+          "type": "integer"
+        },
+        "v_star": {
+          "title": "V Star",
+          "type": "integer"
+        },
+        "versions": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Versions",
+          "type": "object"
+        },
+        "worst_witness": {
+          "$ref": "#/$defs/Witness"
+        }
+      },
+      "required": [
+        "instance_id",
+        "instance_hash",
+        "versions",
+        "budget",
+        "solid_editable",
+        "empty_editable",
+        "expected_enumerated_count",
+        "enumerated_count",
+        "legal_count",
+        "v_star",
+        "v_min",
+        "optimal_count",
+        "min_moves_for_optimum",
+        "histogram",
+        "histogram_by_moves",
+        "best_witness",
+        "worst_witness",
+        "rejections",
+        "constraint_totals",
+        "no_shadow",
+        "admissible"
+      ],
+      "title": "CertificateCore",
+      "type": "object"
+    },
+    "CertificateRun": {
+      "additionalProperties": false,
+      "description": "Non-deterministic run facts. Excluded from ``core_hash``.",
+      "properties": {
+        "created_at": {
+          "title": "Created At",
+          "type": "string"
+        },
+        "python": {
+          "title": "Python",
+          "type": "string"
+        },
+        "runtime_ms": {
+          "title": "Runtime Ms",
+          "type": "number"
+        }
+      },
+      "required": [
+        "runtime_ms",
+        "created_at",
+        "python"
+      ],
+      "title": "CertificateRun",
+      "type": "object"
+    },
+    "ConstraintTotals": {
+      "additionalProperties": false,
+      "description": "Independent totals over all enumerated candidates (a candidate can count in both).",
+      "properties": {
+        "both": {
+          "title": "Both",
+          "type": "integer"
+        },
+        "silhouette_fail": {
+          "title": "Silhouette Fail",
+          "type": "integer"
+        },
+        "solid_disconnected": {
+          "title": "Solid Disconnected",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "silhouette_fail",
+        "solid_disconnected",
+        "both"
+      ],
+      "title": "ConstraintTotals",
+      "type": "object"
+    },
+    "NoShadowAblation": {
+      "additionalProperties": false,
+      "description": "Research diagnostic: the same edit space with the silhouette constraint removed.\nNever part of official scores.",
+      "properties": {
+        "best_witness": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Witness"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "histogram": {
+          "additionalProperties": {
+            "type": "integer"
+          },
+          "title": "Histogram",
+          "type": "object"
+        },
+        "legal_count": {
+          "title": "Legal Count",
+          "type": "integer"
+        },
+        "v_star": {
+          "title": "V Star",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "legal_count",
+        "v_star",
+        "histogram",
+        "best_witness"
+      ],
+      "title": "NoShadowAblation",
+      "type": "object"
+    },
+    "RejectionCounts": {
+      "additionalProperties": false,
+      "description": "Enumerated candidates rejected, charged to the FIRST failing constraint in order\n(silhouette, then solid connectivity).",
+      "properties": {
+        "silhouette": {
+          "title": "Silhouette",
+          "type": "integer"
+        },
+        "solid_disconnected": {
+          "title": "Solid Disconnected",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "silhouette",
+        "solid_disconnected"
+      ],
+      "title": "RejectionCounts",
+      "type": "object"
+    },
+    "VerificationRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "checked_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Checked At"
+        },
+        "mismatches": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Mismatches",
+          "type": "array"
+        },
+        "runtime_ms": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Runtime Ms"
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "mismatch",
+            "error",
+            "not_run"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "verifier_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Verifier Version"
+        }
+      },
+      "required": [
+        "status"
+      ],
+      "title": "VerificationRecord",
+      "type": "object"
+    },
+    "Witness": {
+      "additionalProperties": false,
+      "properties": {
+        "add": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Add",
+          "type": "array"
+        },
+        "objective": {
+          "title": "Objective",
+          "type": "integer"
+        },
+        "remove": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Remove",
+          "type": "array"
+        }
+      },
+      "required": [
+        "remove",
+        "add",
+        "objective"
+      ],
+      "title": "Witness",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "core": {
+      "$ref": "#/$defs/CertificateCore"
+    },
+    "core_hash": {
+      "title": "Core Hash",
+      "type": "string"
+    },
+    "independent_verification": {
+      "$ref": "#/$defs/VerificationRecord"
+    },
+    "run": {
+      "$ref": "#/$defs/CertificateRun"
+    },
+    "schema_version": {
+      "const": "shadowtwins.certificate.v1",
+      "default": "shadowtwins.certificate.v1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "core",
+    "core_hash",
+    "run"
+  ],
+  "title": "ShadowTwinsCertificate",
+  "type": "object"
+}

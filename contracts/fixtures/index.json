@@ -1,0 +1,255 @@
+{
+  "note": "Formal fixtures for development and tests. Not benchmark content or model results.",
+  "versions": {
+    "rules": "st-rules-1.0.0",
+    "parser": "st-parser-1.0.0",
+    "evaluator": "st-eval-1.0.0",
+    "solver": "st-solver-1.0.0",
+    "protocol": "st-protocol-1.0.0",
+    "generator": "st-gen-1.0.0",
+    "replay": "st-replay-1.0.0"
+  },
+  "instances": [
+    {
+      "instance_id": "fx-bent-tunnel-block",
+      "label": "Bent tunnel in a block",
+      "v_star": 1,
+      "admissible": true,
+      "instance": "instances/fx-bent-tunnel-block.json",
+      "certificate": "certificates/fx-bent-tunnel-block.json",
+      "prompt": "prompts/fx-bent-tunnel-block.txt",
+      "replay": "replays/fx-bent-tunnel-block__optimal-only.json"
+    },
+    {
+      "instance_id": "fx-shadow-gate",
+      "label": "Shadow gate",
+      "v_star": 2,
+      "admissible": true,
+      "instance": "instances/fx-shadow-gate.json",
+      "certificate": "certificates/fx-shadow-gate.json",
+      "prompt": "prompts/fx-shadow-gate.txt",
+      "replay": "replays/fx-shadow-gate__optimal-only.json"
+    },
+    {
+      "instance_id": "fx-straight-tunnel-zero",
+      "label": "Shadow-protected straight tunnel",
+      "v_star": 0,
+      "admissible": false,
+      "instance": "instances/fx-straight-tunnel-zero.json",
+      "certificate": "certificates/fx-straight-tunnel-zero.json",
+      "prompt": "prompts/fx-straight-tunnel-zero.txt"
+    },
+    {
+      "instance_id": "fx-snake-10x10",
+      "label": "Snake network, s = e = 10, b = 3",
+      "v_star": 9,
+      "admissible": true,
+      "instance": "instances/fx-snake-10x10.json",
+      "certificate": "certificates/fx-snake-10x10.json",
+      "prompt": "prompts/fx-snake-10x10.txt",
+      "replay": "replays/fx-snake-10x10__optimal-only.json"
+    }
+  ],
+  "responses": [
+    {
+      "case": "optimal",
+      "instance_id": "fx-shadow-gate",
+      "valid": true,
+      "category": null,
+      "score": 100.0,
+      "response": "responses/fx-shadow-gate__optimal.json",
+      "evaluation": "evaluations/fx-shadow-gate__optimal.json",
+      "replay": "replays/fx-shadow-gate__optimal.json"
+    },
+    {
+      "case": "optimal-fenced",
+      "instance_id": "fx-shadow-gate",
+      "valid": true,
+      "category": null,
+      "score": 100.0,
+      "response": "responses/fx-shadow-gate__optimal-fenced.json",
+      "evaluation": "evaluations/fx-shadow-gate__optimal-fenced.json",
+      "replay": "replays/fx-shadow-gate__optimal-fenced.json"
+    },
+    {
+      "case": "partial",
+      "instance_id": "fx-shadow-gate",
+      "valid": true,
+      "category": null,
+      "score": 50.0,
+      "response": "responses/fx-shadow-gate__partial.json",
+      "evaluation": "evaluations/fx-shadow-gate__partial.json",
+      "replay": "replays/fx-shadow-gate__partial.json"
+    },
+    {
+      "case": "noop",
+      "instance_id": "fx-shadow-gate",
+      "valid": true,
+      "category": null,
+      "score": 0.0,
+      "response": "responses/fx-shadow-gate__noop.json",
+      "evaluation": "evaluations/fx-shadow-gate__noop.json",
+      "replay": "replays/fx-shadow-gate__noop.json"
+    },
+    {
+      "case": "prose-wrapped",
+      "instance_id": "fx-shadow-gate",
+      "valid": false,
+      "category": "malformed_json",
+      "score": 0.0,
+      "response": "responses/fx-shadow-gate__prose-wrapped.json",
+      "evaluation": "evaluations/fx-shadow-gate__prose-wrapped.json",
+      "replay": "replays/fx-shadow-gate__prose-wrapped.json"
+    },
+    {
+      "case": "multiple-answers",
+      "instance_id": "fx-shadow-gate",
+      "valid": false,
+      "category": "malformed_json",
+      "score": 0.0,
+      "response": "responses/fx-shadow-gate__multiple-answers.json",
+      "evaluation": "evaluations/fx-shadow-gate__multiple-answers.json",
+      "replay": "replays/fx-shadow-gate__multiple-answers.json"
+    },
+    {
+      "case": "duplicate-keys",
+      "instance_id": "fx-shadow-gate",
+      "valid": false,
+      "category": "malformed_json",
+      "score": 0.0,
+      "response": "responses/fx-shadow-gate__duplicate-keys.json",
+      "evaluation": "evaluations/fx-shadow-gate__duplicate-keys.json",
+      "replay": "replays/fx-shadow-gate__duplicate-keys.json"
+    },
+    {
+      "case": "boolean-id",
+      "instance_id": "fx-shadow-gate",
+      "valid": false,
+      "category": "invalid_ids_or_types",
+      "score": 0.0,
+      "response": "responses/fx-shadow-gate__boolean-id.json",
+      "evaluation": "evaluations/fx-shadow-gate__boolean-id.json",
+      "replay": "replays/fx-shadow-gate__boolean-id.json"
+    },
+    {
+      "case": "float-id",
+      "instance_id": "fx-shadow-gate",
+      "valid": false,
+      "category": "invalid_ids_or_types",
+      "score": 0.0,
+      "response": "responses/fx-shadow-gate__float-id.json",
+      "evaluation": "evaluations/fx-shadow-gate__float-id.json",
+      "replay": "replays/fx-shadow-gate__float-id.json"
+    },
+    {
+      "case": "out-of-range",
+      "instance_id": "fx-shadow-gate",
+      "valid": false,
+      "category": "invalid_ids_or_types",
+      "score": 0.0,
+      "response": "responses/fx-shadow-gate__out-of-range.json",
+      "evaluation": "evaluations/fx-shadow-gate__out-of-range.json",
+      "replay": "replays/fx-shadow-gate__out-of-range.json"
+    },
+    {
+      "case": "duplicate-ids",
+      "instance_id": "fx-shadow-gate",
+      "valid": false,
+      "category": "duplicate_ids",
+      "score": 0.0,
+      "response": "responses/fx-shadow-gate__duplicate-ids.json",
+      "evaluation": "evaluations/fx-shadow-gate__duplicate-ids.json",
+      "replay": "replays/fx-shadow-gate__duplicate-ids.json"
+    },
+    {
+      "case": "wrong-source",
+      "instance_id": "fx-shadow-gate",
+      "valid": false,
+      "category": "wrong_source_occupancy",
+      "score": 0.0,
+      "response": "responses/fx-shadow-gate__wrong-source.json",
+      "evaluation": "evaluations/fx-shadow-gate__wrong-source.json",
+      "replay": "replays/fx-shadow-gate__wrong-source.json"
+    },
+    {
+      "case": "unequal-counts",
+      "instance_id": "fx-shadow-gate",
+      "valid": false,
+      "category": "unequal_edit_counts",
+      "score": 0.0,
+      "response": "responses/fx-shadow-gate__unequal-counts.json",
+      "evaluation": "evaluations/fx-shadow-gate__unequal-counts.json",
+      "replay": "replays/fx-shadow-gate__unequal-counts.json"
+    },
+    {
+      "case": "budget-exceeded",
+      "instance_id": "fx-shadow-gate",
+      "valid": false,
+      "category": "budget_exceeded",
+      "score": 0.0,
+      "response": "responses/fx-shadow-gate__budget-exceeded.json",
+      "evaluation": "evaluations/fx-shadow-gate__budget-exceeded.json",
+      "replay": "replays/fx-shadow-gate__budget-exceeded.json"
+    },
+    {
+      "case": "silhouette-changed",
+      "instance_id": "fx-shadow-gate",
+      "valid": false,
+      "category": "silhouette_changed",
+      "score": 0.0,
+      "response": "responses/fx-shadow-gate__silhouette-changed.json",
+      "evaluation": "evaluations/fx-shadow-gate__silhouette-changed.json",
+      "replay": "replays/fx-shadow-gate__silhouette-changed.json"
+    },
+    {
+      "case": "refusal",
+      "instance_id": "fx-shadow-gate",
+      "valid": false,
+      "category": "refusal",
+      "score": 0.0,
+      "response": "responses/fx-shadow-gate__refusal.json",
+      "evaluation": "evaluations/fx-shadow-gate__refusal.json",
+      "replay": "replays/fx-shadow-gate__refusal.json"
+    },
+    {
+      "case": "provider-refusal",
+      "instance_id": "fx-shadow-gate",
+      "valid": false,
+      "category": "refusal",
+      "score": 0.0,
+      "response": "responses/fx-shadow-gate__provider-refusal.json",
+      "evaluation": "evaluations/fx-shadow-gate__provider-refusal.json",
+      "replay": "replays/fx-shadow-gate__provider-refusal.json"
+    },
+    {
+      "case": "truncated",
+      "instance_id": "fx-shadow-gate",
+      "valid": false,
+      "category": "truncated",
+      "score": 0.0,
+      "response": "responses/fx-shadow-gate__truncated.json",
+      "evaluation": "evaluations/fx-shadow-gate__truncated.json",
+      "replay": "replays/fx-shadow-gate__truncated.json"
+    },
+    {
+      "case": "disconnected",
+      "instance_id": "fx-snake-10x10",
+      "valid": false,
+      "category": "solid_disconnected",
+      "score": 0.0,
+      "response": "responses/fx-snake-10x10__disconnected.json",
+      "evaluation": "evaluations/fx-snake-10x10__disconnected.json",
+      "replay": "replays/fx-snake-10x10__disconnected.json"
+    },
+    {
+      "case": "snake-optimal",
+      "instance_id": "fx-snake-10x10",
+      "valid": true,
+      "category": null,
+      "score": 100.0,
+      "response": "responses/fx-snake-10x10__snake-optimal.json",
+      "evaluation": "evaluations/fx-snake-10x10__snake-optimal.json",
+      "replay": "replays/fx-snake-10x10__snake-optimal.json"
+    }
+  ]
+}

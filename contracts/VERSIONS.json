@@ -1,0 +1,31 @@
+{
+  "contracts_version": "1.0.0",
+  "schemas": {
+    "benchcore.benchmark-metadata.v1": "sha256:2b29d77f40371340f67d18e74746ec54e6fefd592c3f9c1c323f1ed0a0271ce5",
+    "benchcore.evaluation-envelope.v1": "sha256:cdacb5b34c75d1699395fb339bc2bc0d6706193648013844451406e97dabd906",
+    "benchcore.rendered-prompt.v1": "sha256:2200ee263ff9e2d735c87f4fe383a2296687dc29c81d828e1a5332fdbe61c1bd",
+    "benchcore.run-spec.v1": "sha256:1b59c538102212c76ecb7494f7389c559a2f476e5b590378a852b8c89541d6c8",
+    "shadowtwins.certificate.v1": "sha256:abfa8b235e4b42234eb61d181c9b21d275a54f52e0a12944dacf751ac6c7f116",
+    "shadowtwins.edit.v1": "sha256:a5507577039f4f3bec6df1d3f052e445a960bd7c9467acb78db3f2b0974ea5ea",
+    "shadowtwins.evaluation.v1": "sha256:8c54c36b09296cfc5c8912b517317aee043b2489d54c1bcc9882f670cff11126",
+    "shadowtwins.instance.v1": "sha256:ed483297a8815f8873bcf71576dd10860dec44351ac46b18b278f31cea269432",
+    "shadowtwins.parse-outcome.v1": "sha256:2c86e4ccfed293594583e9d93fcde9e7d3e44be236f06d1d9c33b70d490a590f",
+    "shadowtwins.replay.v1": "sha256:6869da45ec9f228f27421a7a3cbb40c8ca1490a01754e913a4020b52b45c392d"
+  },
+  "shadow_twins": {
+    "evaluator": "st-eval-1.0.0",
+    "generator": "st-gen-1.0.0",
+    "parser": "st-parser-1.0.0",
+    "protocol": "st-protocol-1.0.0",
+    "replay": "st-replay-1.0.0",
+    "rules": "st-rules-1.0.0",
+    "solver": "st-solver-1.0.0"
+  },
+  "suite": {
+    "benchmarks": [
+      "shadow_twins"
+    ],
+    "id": "llmbench-suite",
+    "version": "suite-1"
+  }
+}

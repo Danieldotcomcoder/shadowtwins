@@ -1,0 +1,64 @@
+{
+  "$defs": {
+    "ChatMessage": {
+      "additionalProperties": false,
+      "properties": {
+        "content": {
+          "title": "Content",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "system",
+            "user"
+          ],
+          "title": "Role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "role",
+        "content"
+      ],
+      "title": "ChatMessage",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "The exact authored text sent to a model for one instance.",
+  "properties": {
+    "benchmark_id": {
+      "title": "Benchmark Id",
+      "type": "string"
+    },
+    "instance_id": {
+      "title": "Instance Id",
+      "type": "string"
+    },
+    "messages": {
+      "items": {
+        "$ref": "#/$defs/ChatMessage"
+      },
+      "title": "Messages",
+      "type": "array"
+    },
+    "protocol_version": {
+      "title": "Protocol Version",
+      "type": "string"
+    },
+    "text_hash": {
+      "description": "sha256 of the canonical JSON of `messages`.",
+      "title": "Text Hash",
+      "type": "string"
+    }
+  },
+  "required": [
+    "benchmark_id",
+    "instance_id",
+    "protocol_version",
+    "messages",
+    "text_hash"
+  ],
+  "title": "RenderedPrompt",
+  "type": "object"
+}

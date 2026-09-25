@@ -1,0 +1,10 @@
+{
+  "instance_id": "fx-shadow-gate",
+  "case": "multiple-answers",
+  "raw_text": "{\"remove\":[0],\"add\":[2]}\n{\"remove\":[],\"add\":[]}",
+  "completion_meta": {
+    "finish_reason": "stop",
+    "native_finish_reason": null,
+    "refusal": null
+  }
+}

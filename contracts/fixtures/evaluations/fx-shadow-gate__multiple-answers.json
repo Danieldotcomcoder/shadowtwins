@@ -1,0 +1,110 @@
+{
+  "schema_version": "shadowtwins.evaluation.v1",
+  "instance_id": "fx-shadow-gate",
+  "instance_hash": "sha256:aaf03d1ad1964bd67772415afe91f68af2696976e9e09d7e20b6afc34162170c",
+  "versions": {
+    "rules": "st-rules-1.0.0",
+    "parser": "st-parser-1.0.0",
+    "evaluator": "st-eval-1.0.0",
+    "protocol": "st-protocol-1.0.0"
+  },
+  "parse": {
+    "parser_version": "st-parser-1.0.0",
+    "ok": false,
+    "category": "malformed_json",
+    "detail": "multiple_answers",
+    "message": "text after the JSON object; answer must be one JSON object only",
+    "edit": null,
+    "json_text": null
+  },
+  "edit": null,
+  "valid": false,
+  "category": "malformed_json",
+  "checks": [
+    {
+      "code": "parse",
+      "status": "fail",
+      "message": "multiple_answers: text after the JSON object; answer must be one JSON object only",
+      "cells": [],
+      "ids": []
+    },
+    {
+      "code": "id_types",
+      "status": "skipped",
+      "message": "answer did not parse",
+      "cells": [],
+      "ids": []
+    },
+    {
+      "code": "no_duplicates",
+      "status": "skipped",
+      "message": "answer did not parse",
+      "cells": [],
+      "ids": []
+    },
+    {
+      "code": "source_occupancy",
+      "status": "skipped",
+      "message": "answer did not parse",
+      "cells": [],
+      "ids": []
+    },
+    {
+      "code": "equal_counts",
+      "status": "skipped",
+      "message": "answer did not parse",
+      "cells": [],
+      "ids": []
+    },
+    {
+      "code": "budget",
+      "status": "skipped",
+      "message": "answer did not parse",
+      "cells": [],
+      "ids": []
+    },
+    {
+      "code": "immutable_cells",
+      "status": "skipped",
+      "message": "answer did not parse",
+      "cells": [],
+      "ids": []
+    },
+    {
+      "code": "silhouette_x",
+      "status": "skipped",
+      "message": "answer did not parse",
+      "cells": [],
+      "ids": []
+    },
+    {
+      "code": "silhouette_y",
+      "status": "skipped",
+      "message": "answer did not parse",
+      "cells": [],
+      "ids": []
+    },
+    {
+      "code": "silhouette_z",
+      "status": "skipped",
+      "message": "answer did not parse",
+      "cells": [],
+      "ids": []
+    },
+    {
+      "code": "solid_connected",
+      "status": "skipped",
+      "message": "answer did not parse",
+      "cells": [],
+      "ids": []
+    }
+  ],
+  "final_occupancy": null,
+  "raw_objective": null,
+  "v_star": 2,
+  "score": 0.0,
+  "opened": null,
+  "closed": null,
+  "move_count": null,
+  "is_optimal": false
+}

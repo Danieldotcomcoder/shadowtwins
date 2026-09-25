@@ -1,0 +1,81 @@
+{
+  "additionalProperties": false,
+  "description": "Generic view of one scored answer. ``detail`` holds the benchmark-specific evaluation.",
+  "properties": {
+    "benchmark_id": {
+      "title": "Benchmark Id",
+      "type": "string"
+    },
+    "category": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Invalid-answer category; null for valid answers.",
+      "title": "Category"
+    },
+    "detail": {
+      "additionalProperties": true,
+      "title": "Detail",
+      "type": "object"
+    },
+    "instance_hash": {
+      "title": "Instance Hash",
+      "type": "string"
+    },
+    "instance_id": {
+      "title": "Instance Id",
+      "type": "string"
+    },
+    "max_objective": {
+      "title": "Max Objective",
+      "type": "integer"
+    },
+    "raw_objective": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Raw Objective"
+    },
+    "score": {
+      "maximum": 100.0,
+      "minimum": 0.0,
+      "title": "Score",
+      "type": "number"
+    },
+    "valid": {
+      "title": "Valid",
+      "type": "boolean"
+    },
+    "versions": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Versions",
+      "type": "object"
+    }
+  },
+  "required": [
+    "benchmark_id",
+    "instance_id",
+    "instance_hash",
+    "valid",
+    "score",
+    "max_objective",
+    "versions",
+    "detail"
+  ],
+  "title": "EvaluationEnvelope",
+  "type": "object"
+}

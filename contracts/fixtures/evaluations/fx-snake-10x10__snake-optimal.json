@@ -1,0 +1,132 @@
+{
+  "schema_version": "shadowtwins.evaluation.v1",
+  "instance_id": "fx-snake-10x10",
+  "instance_hash": "sha256:c47943cf7bd1d690ae79434d4b5b982241e245d50bcc6e3f724da45057fbeb78",
+  "versions": {
+    "rules": "st-rules-1.0.0",
+    "parser": "st-parser-1.0.0",
+    "evaluator": "st-eval-1.0.0",
+    "protocol": "st-protocol-1.0.0"
+  },
+  "parse": {
+    "parser_version": "st-parser-1.0.0",
+    "ok": true,
+    "category": null,
+    "detail": null,
+    "message": null,
+    "edit": {
+      "remove": [
+        0,
+        1,
+        2
+      ],
+      "add": [
+        10,
+        11,
+        13
+      ]
+    },
+    "json_text": "{\"remove\":[0,1,2],\"add\":[10,11,13]}"
+  },
+  "edit": {
+    "remove": [
+      0,
+      1,
+      2
+    ],
+    "add": [
+      10,
+      11,
+      13
+    ]
+  },
+  "valid": true,
+  "category": null,
+  "checks": [
+    {
+      "code": "parse",
+      "status": "pass",
+      "message": "one JSON object with integer ID arrays",
+      "cells": [],
+      "ids": []
+    },
+    {
+      "code": "id_types",
+      "status": "pass",
+      "message": "all IDs are integers in range",
+      "cells": [],
+      "ids": []
+    },
+    {
+      "code": "no_duplicates",
+      "status": "pass",
+      "message": "no repeated IDs",
+      "cells": [],
+      "ids": []
+    },
+    {
+      "code": "source_occupancy",
+      "status": "pass",
+      "message": "removed cells were solid, added were empty",
+      "cells": [],
+      "ids": []
+    },
+    {
+      "code": "equal_counts",
+      "status": "pass",
+      "message": "3 removed, 3 added",
+      "cells": [],
+      "ids": []
+    },
+    {
+      "code": "budget",
+      "status": "pass",
+      "message": "3 of 3 relocations used",
+      "cells": [],
+      "ids": []
+    },
+    {
+      "code": "immutable_cells",
+      "status": "pass",
+      "message": "only editable cells changed; entrances empty",
+      "cells": [],
+      "ids": []
+    },
+    {
+      "code": "silhouette_x",
+      "status": "pass",
+      "message": "view along x unchanged",
+      "cells": [],
+      "ids": []
+    },
+    {
+      "code": "silhouette_y",
+      "status": "pass",
+      "message": "view along y unchanged",
+      "cells": [],
+      "ids": []
+    },
+    {
+      "code": "silhouette_z",
+      "status": "pass",
+      "message": "view along z unchanged",
+      "cells": [],
+      "ids": []
+    },
+    {
+      "code": "solid_connected",
+      "status": "pass",
+      "message": "solid cubes form one face-connected piece",
+      "cells": [],
+      "ids": []
+    }
+  ],
+  "final_occupancy": "0011111110101110110110111001011111101100101110111110111100110111",
+  "raw_objective": 9,
+  "v_star": 9,
+  "score": 100.0,
+  "opened": 0,
+  "closed": 9,
+  "move_count": 3,
+  "is_optimal": true
+}

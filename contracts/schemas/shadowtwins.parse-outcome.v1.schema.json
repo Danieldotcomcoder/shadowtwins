@@ -1,0 +1,126 @@
+{
+  "$defs": {
+    "Edit": {
+      "additionalProperties": false,
+      "description": "Relocation answer: ``remove`` and ``add`` are editable-cell IDs, applied simultaneously.",
+      "properties": {
+        "add": {
+          "items": {
+            "type": "integer"
+          },
+          "maxItems": 64,
+          "title": "Add",
+          "type": "array"
+        },
+        "remove": {
+          "items": {
+            "type": "integer"
+          },
+          "maxItems": 64,
+          "title": "Remove",
+          "type": "array"
+        }
+      },
+      "required": [
+        "remove",
+        "add"
+      ],
+      "title": "Edit",
+      "type": "object"
+    },
+    "InvalidCategory": {
+      "enum": [
+        "malformed_json",
+        "invalid_ids_or_types",
+        "duplicate_ids",
+        "wrong_source_occupancy",
+        "unequal_edit_counts",
+        "budget_exceeded",
+        "immutable_cell_modified",
+        "silhouette_changed",
+        "solid_disconnected",
+        "refusal",
+        "truncated"
+      ],
+      "title": "InvalidCategory",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "category": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/InvalidCategory"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "detail": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "Stable machine sub-code, e.g. prose_wrapped.",
+      "title": "Detail"
+    },
+    "edit": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Edit"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "json_text": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "description": "The JSON text that was parsed.",
+      "title": "Json Text"
+    },
+    "message": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Message"
+    },
+    "ok": {
+      "title": "Ok",
+      "type": "boolean"
+    },
+    "parser_version": {
+      "title": "Parser Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "parser_version",
+    "ok"
+  ],
+  "title": "ParseOutcome",
+  "type": "object"
+}

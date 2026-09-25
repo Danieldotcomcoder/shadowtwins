@@ -1,0 +1,220 @@
+{
+  "$defs": {
+    "InstanceCore": {
+      "additionalProperties": false,
+      "description": "The hashed identity of an instance: geometry, entrances, editable list and budget.",
+      "properties": {
+        "budget": {
+          "maximum": 3,
+          "minimum": 1,
+          "title": "Budget",
+          "type": "integer"
+        },
+        "editable": {
+          "items": {
+            "description": "Cell (x, y, z); x = column, y = row, z = layer (0 = bottom).",
+            "maxItems": 3,
+            "minItems": 3,
+            "prefixItems": [
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              }
+            ],
+            "type": "array"
+          },
+          "maxItems": 64,
+          "minItems": 1,
+          "title": "Editable",
+          "type": "array"
+        },
+        "entrances": {
+          "items": {
+            "description": "Cell (x, y, z); x = column, y = row, z = layer (0 = bottom).",
+            "maxItems": 3,
+            "minItems": 3,
+            "prefixItems": [
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              }
+            ],
+            "type": "array"
+          },
+          "maxItems": 8,
+          "minItems": 2,
+          "title": "Entrances",
+          "type": "array"
+        },
+        "grid_size": {
+          "const": 4,
+          "default": 4,
+          "title": "Grid Size",
+          "type": "integer"
+        },
+        "occupancy": {
+          "description": "Character i is cell index i = x + 4y + 16z; '1' solid, '0' empty.",
+          "maxLength": 64,
+          "minLength": 64,
+          "pattern": "^[01]{64}$",
+          "title": "Occupancy",
+          "type": "string"
+        }
+      },
+      "required": [
+        "occupancy",
+        "entrances",
+        "editable",
+        "budget"
+      ],
+      "title": "InstanceCore",
+      "type": "object"
+    },
+    "InstanceMeta": {
+      "additionalProperties": false,
+      "description": "Provenance and labels. Excluded from the content hash.",
+      "properties": {
+        "generator_version": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Generator Version"
+        },
+        "label": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Label"
+        },
+        "metrics": {
+          "additionalProperties": true,
+          "title": "Metrics",
+          "type": "object"
+        },
+        "notes": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Notes"
+        },
+        "seed": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Seed"
+        },
+        "split": {
+          "anyOf": [
+            {
+              "enum": [
+                "fixture",
+                "development",
+                "practice",
+                "ranked"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Split"
+        },
+        "tier": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Tier"
+        }
+      },
+      "title": "InstanceMeta",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "content_hash": {
+      "title": "Content Hash",
+      "type": "string"
+    },
+    "core": {
+      "$ref": "#/$defs/InstanceCore"
+    },
+    "instance_id": {
+      "maxLength": 80,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_.\\-]+$",
+      "title": "Instance Id",
+      "type": "string"
+    },
+    "meta": {
+      "$ref": "#/$defs/InstanceMeta"
+    },
+    "schema_version": {
+      "const": "shadowtwins.instance.v1",
+      "default": "shadowtwins.instance.v1",
+      "title": "Schema Version",
+      "type": "string"
+    }
+  },
+  "required": [
+    "instance_id",
+    "core",
+    "content_hash"
+  ],
+  "title": "ShadowTwinsInstance",
+  "type": "object"
+}

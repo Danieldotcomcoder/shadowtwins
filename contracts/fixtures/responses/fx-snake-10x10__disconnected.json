@@ -1,0 +1,10 @@
+{
+  "instance_id": "fx-snake-10x10",
+  "case": "disconnected",
+  "raw_text": "{\"remove\":[2,4],\"add\":[10,11]}",
+  "completion_meta": {
+    "finish_reason": "stop",
+    "native_finish_reason": null,
+    "refusal": null
+  }
+}
