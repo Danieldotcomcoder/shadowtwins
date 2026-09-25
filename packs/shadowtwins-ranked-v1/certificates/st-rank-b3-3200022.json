@@ -1,0 +1,130 @@
+{
+  "schema_version": "shadowtwins.certificate.v1",
+  "core": {
+    "instance_id": "st-rank-b3-3200022",
+    "instance_hash": "sha256:e00d33aa54a1dd958db8b373e02a98c8e5d8e799f7a3443bb0b12d8e13e7526f",
+    "versions": {
+      "rules": "st-rules-1.0.0",
+      "solver": "st-solver-1.0.0",
+      "evaluator": "st-eval-1.0.0",
+      "protocol": "st-protocol-1.0.0",
+      "generator": "st-gen-1.0.0"
+    },
+    "budget": 3,
+    "solid_editable": 10,
+    "empty_editable": 10,
+    "expected_enumerated_count": 16526,
+    "enumerated_count": 16526,
+    "legal_count": 3037,
+    "v_star": 10,
+    "v_min": 0,
+    "optimal_count": 50,
+    "min_moves_for_optimum": 3,
+    "histogram": {
+      "0": 1131,
+      "4": 869,
+      "5": 371,
+      "6": 71,
+      "7": 167,
+      "8": 362,
+      "9": 16,
+      "10": 50
+    },
+    "histogram_by_moves": {
+      "0": {
+        "0": 1
+      },
+      "1": {
+        "0": 32,
+        "4": 14,
+        "5": 2
+      },
+      "2": {
+        "0": 261,
+        "4": 188,
+        "5": 51,
+        "6": 6,
+        "7": 16,
+        "8": 34
+      },
+      "3": {
+        "0": 837,
+        "4": 667,
+        "5": 318,
+        "6": 65,
+        "7": 151,
+        "8": 328,
+        "9": 16,
+        "10": 50
+      }
+    },
+    "best_witness": {
+      "remove": [
+        0,
+        2,
+        5
+      ],
+      "add": [
+        11,
+        12,
+        18
+      ],
+      "objective": 10
+    },
+    "worst_witness": {
+      "remove": [],
+      "add": [],
+      "objective": 0
+    },
+    "rejections": {
+      "silhouette": 10202,
+      "solid_disconnected": 3287
+    },
+    "constraint_totals": {
+      "silhouette_fail": 10202,
+      "solid_disconnected": 7782,
+      "both": 4495
+    },
+    "no_shadow": {
+      "legal_count": 8744,
+      "v_star": 10,
+      "histogram": {
+        "0": 2214,
+        "4": 1467,
+        "5": 598,
+        "6": 1753,
+        "7": 206,
+        "8": 1271,
+        "9": 804,
+        "10": 431
+      },
+      "best_witness": {
+        "remove": [
+          0,
+          5
+        ],
+        "add": [
+          11,
+          15
+        ],
+        "objective": 10
+      }
+    },
+    "exhaustive": true,
+    "admissible": true,
+    "inadmissible_reason": null
+  },
+  "core_hash": "sha256:40736a081565163f9a64a66c33c3dd5ac69e9241a822827fda89e044f0a8d99e",
+  "run": {
+    "runtime_ms": 776.702,
+    "created_at": "2026-09-25T22:18:04+00:00",
+    "python": "3.12.13"
+  },
+  "independent_verification": {
+    "status": "verified",
+    "verifier_version": "stverify-1.0.0",
+    "runtime_ms": 7299.757,
+    "mismatches": [],
+    "checked_at": "2026-09-25T22:18:14+00:00"
+  }
+}

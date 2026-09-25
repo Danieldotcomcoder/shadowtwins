@@ -135,6 +135,57 @@ def cmd_build(args: argparse.Namespace) -> None:
             print(f"   {tid}: {st}")
 
 
+def cmd_pack_report(args: argparse.Namespace) -> None:
+    out: list[str] = []
+    w = out.append
+    w("# Benchmark packs v1\n")
+    w("Generated from the pack manifests by `tools/p2_pipeline.py pack-report`. All values are "
+      "exact certificate facts or deterministic baselines; no model has been run.\n")
+    for pack_id in ("shadowtwins-ranked-v1", "shadowtwins-practice-v1", "shadowtwins-dev-v1"):
+        d = PACKS / pack_id
+        m = json.loads((d / "manifest.json").read_text(encoding="utf-8"))
+        b = json.loads((d / "reports" / "baselines.json").read_text(encoding="utf-8"))
+        rows = json.loads((d / "reports" / "metrics.json").read_text(encoding="utf-8"))
+        w(f"\n## `{pack_id}` ({m['split']} split, {'ranked' if m['ranked'] else 'unranked'})\n")
+        w(f"* Instances: {len(m['items'])} ("
+          + ", ".join(f"{t['id']} {t['name']}: {t['count']}" for t in m["tiers"]) + ")")
+        w(f"* `pack_hash`: `{m['pack_hash']}`")
+        w(f"* `policy_hash`: `{m['policy_hash']}`")
+        w("* Versions: " + ", ".join(f"{k} `{v}`" for k, v in m["versions"].items()))
+        w(f"* Independent verification: {sum(it['verified'] for it in m['items'])}/{len(m['items'])} "
+          "certificates reproduced by `stverify`")
+        tr = m["token_report"]
+        w(f"* Prompt tokens (panel `{tr['panel_version']}`, ceiling {tr['ceiling']}): max {tr['max']}; "
+          "per tokenizer max " + ", ".join(f"{k} {v}" for k, v in tr["per_tokenizer_max"].items()))
+        w("\n| Tier | no-op | random legal (exp.) | random candidate (exp.) | local search | optimum |")
+        w("|---|---|---|---|---|---|")
+        for t, v in sorted(b["per_tier"].items()):
+            w(f"| {t} | {v['noop']:.1f} | {v['random_legal_expected']:.1f} | "
+              f"{v['random_candidate_expected']:.1f} | {v['local_search']:.1f} | {v['optimum']:.1f} |")
+        p = b["pack"]
+        w(f"| **pack (tier-equal)** | {p['noop']:.1f} | {p['random_legal_expected']:.1f} | "
+          f"{p['random_candidate_expected']:.1f} | {p['local_search']:.1f} | {p['optimum']:.1f} |")
+        ms = [r["metrics"] for r in rows]
+        w(f"\nShadow rejection rate {_q([x['shadow_rejection_rate'] for x in ms])}; optimum density "
+          f"{_q([x['optimum_density'] for x in ms])}; v* {_q([x['v_star'] for x in ms])}; "
+          f"partial-credit levels {_q([len(x['partial_levels']) for x in ms])} "
+          "(min / q1 / median / q3 / max).\n")
+        w("| Instance | Tier | v* | legal | optimal | min moves | shadow rej. | traps | LS score | tokens |")
+        w("|---|---|---|---|---|---|---|---|---|---|")
+        for r in rows:
+            x = r["metrics"]
+            w(f"| {r['instance_id']} | {r['tier']} | {x['v_star']} | {x['legal']} | "
+              f"{x['optimal_count']} | {x['min_moves_for_optimum']} | "
+              f"{x['shadow_rejection_rate']:.2f} | {x['shadow_traps']} | "
+              f"{x['local_search_score']:.0f} | {x['tokens_max']} |")
+        w("\nSelection (candidates consumed in seed order per tier): " + "; ".join(
+            f"{t}: examined {s['examined']}, accepted {s['accepted']}"
+            for t, s in m["selection_stats"].items()))
+    target = ROOT / "docs" / "reports" / "PACKS_V1.md"
+    target.write_text("\n".join(out) + "\n", encoding="utf-8", newline="\n")
+    print(f"wrote {target}")
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -144,6 +195,8 @@ def main(argv: list[str] | None = None) -> int:
     p.set_defaults(fn=cmd_dev_scan)
     p = sub.add_parser("dev-report")
     p.set_defaults(fn=cmd_dev_report)
+    p = sub.add_parser("pack-report")
+    p.set_defaults(fn=cmd_pack_report)
     p = sub.add_parser("build")
     p.add_argument("--jobs", type=int, default=8)
     p.add_argument("--force", action="store_true", help="development only: overwrite existing packs")

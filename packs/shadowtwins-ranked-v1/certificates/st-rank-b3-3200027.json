@@ -1,0 +1,116 @@
+{
+  "schema_version": "shadowtwins.certificate.v1",
+  "core": {
+    "instance_id": "st-rank-b3-3200027",
+    "instance_hash": "sha256:d2d6ce63221ac69baf791ae93cc757981a69dfbd58e343dfcaead399ef71948f",
+    "versions": {
+      "rules": "st-rules-1.0.0",
+      "solver": "st-solver-1.0.0",
+      "evaluator": "st-eval-1.0.0",
+      "protocol": "st-protocol-1.0.0",
+      "generator": "st-gen-1.0.0"
+    },
+    "budget": 3,
+    "solid_editable": 10,
+    "empty_editable": 8,
+    "expected_enumerated_count": 8061,
+    "enumerated_count": 8061,
+    "legal_count": 825,
+    "v_star": 8,
+    "v_min": 0,
+    "optimal_count": 1,
+    "min_moves_for_optimum": 3,
+    "histogram": {
+      "0": 462,
+      "4": 362,
+      "8": 1
+    },
+    "histogram_by_moves": {
+      "0": {
+        "0": 1
+      },
+      "1": {
+        "0": 29,
+        "4": 7
+      },
+      "2": {
+        "0": 151,
+        "4": 89
+      },
+      "3": {
+        "0": 281,
+        "4": 266,
+        "8": 1
+      }
+    },
+    "best_witness": {
+      "remove": [
+        3,
+        4,
+        7
+      ],
+      "add": [
+        10,
+        12,
+        13
+      ],
+      "objective": 8
+    },
+    "worst_witness": {
+      "remove": [],
+      "add": [],
+      "objective": 0
+    },
+    "rejections": {
+      "silhouette": 6998,
+      "solid_disconnected": 238
+    },
+    "constraint_totals": {
+      "silhouette_fail": 6998,
+      "solid_disconnected": 3017,
+      "both": 2779
+    },
+    "no_shadow": {
+      "legal_count": 5044,
+      "v_star": 10,
+      "histogram": {
+        "0": 1543,
+        "4": 825,
+        "5": 1,
+        "6": 1935,
+        "8": 724,
+        "9": 9,
+        "10": 7
+      },
+      "best_witness": {
+        "remove": [
+          3,
+          4,
+          7
+        ],
+        "add": [
+          10,
+          12,
+          16
+        ],
+        "objective": 10
+      }
+    },
+    "exhaustive": true,
+    "admissible": true,
+    "inadmissible_reason": null
+  },
+  "core_hash": "sha256:a9527345eaf0fe1012dbe4dc4b3cf55930c2351f77db56001fba5a65b85ac127",
+  "run": {
+    "runtime_ms": 330.748,
+    "created_at": "2026-09-25T22:18:04+00:00",
+    "python": "3.12.13"
+  },
+  "independent_verification": {
+    "status": "verified",
+    "verifier_version": "stverify-1.0.0",
+    "runtime_ms": 4216.809,
+    "mismatches": [],
+    "checked_at": "2026-09-25T22:18:11+00:00"
+  }
+}

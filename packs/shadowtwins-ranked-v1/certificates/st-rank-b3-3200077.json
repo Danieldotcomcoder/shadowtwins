@@ -1,0 +1,139 @@
+{
+  "schema_version": "shadowtwins.certificate.v1",
+  "core": {
+    "instance_id": "st-rank-b3-3200077",
+    "instance_hash": "sha256:ab202647498109093c673c34c0e97855fb63ce9142f2fc98c2ff680096d340bd",
+    "versions": {
+      "rules": "st-rules-1.0.0",
+      "solver": "st-solver-1.0.0",
+      "evaluator": "st-eval-1.0.0",
+      "protocol": "st-protocol-1.0.0",
+      "generator": "st-gen-1.0.0"
+    },
+    "budget": 3,
+    "solid_editable": 9,
+    "empty_editable": 7,
+    "expected_enumerated_count": 3760,
+    "enumerated_count": 3760,
+    "legal_count": 1304,
+    "v_star": 18,
+    "v_min": 0,
+    "optimal_count": 2,
+    "min_moves_for_optimum": 3,
+    "histogram": {
+      "0": 336,
+      "2": 159,
+      "4": 180,
+      "5": 281,
+      "6": 161,
+      "8": 4,
+      "9": 90,
+      "17": 91,
+      "18": 2
+    },
+    "histogram_by_moves": {
+      "0": {
+        "0": 1
+      },
+      "1": {
+        "0": 23,
+        "2": 8,
+        "4": 4,
+        "5": 6,
+        "6": 2
+      },
+      "2": {
+        "0": 113,
+        "2": 60,
+        "4": 42,
+        "5": 71,
+        "6": 38,
+        "8": 1,
+        "9": 9,
+        "17": 16
+      },
+      "3": {
+        "0": 199,
+        "2": 91,
+        "4": 134,
+        "5": 204,
+        "6": 121,
+        "8": 3,
+        "9": 81,
+        "17": 75,
+        "18": 2
+      }
+    },
+    "best_witness": {
+      "remove": [
+        1,
+        4,
+        5
+      ],
+      "add": [
+        9,
+        12,
+        15
+      ],
+      "objective": 18
+    },
+    "worst_witness": {
+      "remove": [],
+      "add": [],
+      "objective": 0
+    },
+    "rejections": {
+      "silhouette": 1505,
+      "solid_disconnected": 951
+    },
+    "constraint_totals": {
+      "silhouette_fail": 1505,
+      "solid_disconnected": 1567,
+      "both": 616
+    },
+    "no_shadow": {
+      "legal_count": 2193,
+      "v_star": 18,
+      "histogram": {
+        "0": 516,
+        "2": 320,
+        "4": 271,
+        "5": 466,
+        "6": 281,
+        "8": 8,
+        "9": 144,
+        "17": 183,
+        "18": 4
+      },
+      "best_witness": {
+        "remove": [
+          1,
+          4,
+          5
+        ],
+        "add": [
+          9,
+          12,
+          13
+        ],
+        "objective": 18
+      }
+    },
+    "exhaustive": true,
+    "admissible": true,
+    "inadmissible_reason": null
+  },
+  "core_hash": "sha256:76297f77564fb48c0d0683f6b6f956998db824a632f363fdd4f6874bfe04c4cf",
+  "run": {
+    "runtime_ms": 222.613,
+    "created_at": "2026-09-25T22:18:05+00:00",
+    "python": "3.12.13"
+  },
+  "independent_verification": {
+    "status": "verified",
+    "verifier_version": "stverify-1.0.0",
+    "runtime_ms": 2302.545,
+    "mismatches": [],
+    "checked_at": "2026-09-25T22:18:09+00:00"
+  }
+}
