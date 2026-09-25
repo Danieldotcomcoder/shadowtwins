@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import datetime as dt
+import json
+import random
 import time
 from typing import Any, ClassVar
 
@@ -108,7 +110,13 @@ class ShadowTwinsModule(BenchmarkModule):
         return ShadowTwinsCertificate.model_validate(data)
 
     def generate(self, seed: int, params: dict[str, Any] | None = None) -> ShadowTwinsInstance:
-        raise NotImplementedError("instance generation is owned by P2 (shadowtwins.generator)")
+        from .generator import GeneratorParams, generate_candidate
+
+        p = GeneratorParams(**(params or {}))
+        inst = generate_candidate(seed, p)
+        if inst is None:
+            raise ValueError(f"seed {seed} does not yield a structurally valid candidate")
+        return inst
 
     def validate_instance(self, instance: BaseModel) -> InstanceValidation:
         problems = structural_problems(_as_instance(instance))
@@ -171,6 +179,17 @@ class ShadowTwinsModule(BenchmarkModule):
         model_eval = (ShadowTwinsEvaluation.model_validate(evaluation.detail)
                       if evaluation is not None else None)
         return replay.build_replay(inst, cert, model_eval)
+
+    def reference_answer(self, instance: BaseModel, certificate: BaseModel) -> str | None:
+        w = _as_certificate(certificate).core.best_witness
+        return json.dumps({"remove": w.remove, "add": w.add}, separators=(",", ":"))
+
+    def sample_answer(self, instance: BaseModel, seed: int) -> str | None:
+        rng = random.Random(seed)
+        c = compile_instance(_as_instance(instance))
+        r = rng.randint(0, min(c.budget, len(c.solid_ids), len(c.empty_ids)))
+        return json.dumps({"remove": sorted(rng.sample(c.solid_ids, r)),
+                           "add": sorted(rng.sample(c.empty_ids, r))}, separators=(",", ":"))
 
 
 def attach_verification(

@@ -1,0 +1,100 @@
+"""Server settings, read once from the environment.
+
+Credentials are only ever read here and handed to provider adapters; they are never serialized,
+logged, returned by the API or written to the database.
+"""
+
+from __future__ import annotations
+
+import os
+from dataclasses import dataclass, field
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+
+
+def _bool(name: str, default: bool) -> bool:
+    v = os.environ.get(name)
+    if v is None:
+        return default
+    return v.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _float(name: str, default: float) -> float:
+    v = os.environ.get(name)
+    return float(v) if v not in (None, "") else default
+
+
+def _int(name: str, default: int) -> int:
+    v = os.environ.get(name)
+    return int(v) if v not in (None, "") else default
+
+
+@dataclass(frozen=True)
+class RetryPolicy:
+    """Fixed policy for eligible transport/server/rate-limit failures (never for answers)."""
+
+    max_attempts: int = 4
+    base_delay_s: float = 2.0
+    max_delay_s: float = 60.0
+
+    def delay(self, attempt_number: int, retry_after_s: float | None = None) -> float:
+        d = min(self.max_delay_s, self.base_delay_s * (2 ** max(0, attempt_number - 1)))
+        if retry_after_s is not None:
+            d = max(d, min(retry_after_s, self.max_delay_s * 5))
+        return d
+
+
+@dataclass(frozen=True)
+class Settings:
+    data_dir: Path
+    db_path: Path
+    packs_dir: Path
+    frontend_dist: Path
+    openrouter_api_key: str | None = field(default=None, repr=False)
+    openrouter_base_url: str = "https://openrouter.ai/api/v1"
+    operator_token: str | None = field(default=None, repr=False)
+    auth_mode: str = "local"  # token | local | open | readonly
+    enable_mock_provider: bool = False
+    catalog_ttl_s: float = 3600.0
+    http_timeout_s: float = 600.0
+    connect_timeout_s: float = 20.0
+    lease_ttl_s: float = 90.0
+    heartbeat_s: float = 5.0
+    poll_s: float = 0.5
+    worker_concurrency: int = 8
+    retry: RetryPolicy = field(default_factory=RetryPolicy)
+    max_body_bytes: int = 64 * 1024
+    app_title: str = "Shadow Twins"
+    worker_stale_after_s: float = 30.0
+
+    @property
+    def openrouter_configured(self) -> bool:
+        return bool(self.openrouter_api_key)
+
+
+def load_settings(**overrides: object) -> Settings:
+    data_dir = Path(os.environ.get("ST_DATA_DIR", str(ROOT / "data")))
+    token = os.environ.get("ST_OPERATOR_TOKEN") or None
+    mode = os.environ.get("ST_AUTH_MODE") or ("token" if token else "local")
+    values: dict[str, object] = dict(
+        data_dir=data_dir,
+        db_path=Path(os.environ.get("ST_DB_PATH", str(data_dir / "shadowtwins.db"))),
+        packs_dir=Path(os.environ.get("ST_PACKS_DIR", str(ROOT / "packs"))),
+        frontend_dist=Path(os.environ.get("ST_FRONTEND_DIST", str(ROOT / "frontend" / "dist"))),
+        openrouter_api_key=os.environ.get("OPENROUTER_API_KEY") or None,
+        openrouter_base_url=os.environ.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
+        operator_token=token,
+        auth_mode=mode,
+        enable_mock_provider=_bool("ST_ENABLE_MOCK_PROVIDER", False),
+        catalog_ttl_s=_float("ST_CATALOG_TTL_S", 3600.0),
+        http_timeout_s=_float("ST_HTTP_TIMEOUT_S", 600.0),
+        lease_ttl_s=_float("ST_LEASE_TTL_S", 90.0),
+        worker_concurrency=_int("ST_WORKER_CONCURRENCY", 8),
+    )
+    values.update(overrides)
+    if values["auth_mode"] not in {"token", "local", "open", "readonly"}:
+        raise ValueError("ST_AUTH_MODE must be token, local, open or readonly")
+    if values["auth_mode"] == "token" and not values.get("operator_token"):
+        raise ValueError("ST_AUTH_MODE=token requires ST_OPERATOR_TOKEN")
+    return Settings(**values)  # type: ignore[arg-type]

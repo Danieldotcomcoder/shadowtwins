@@ -51,3 +51,11 @@ Append-only. Each entry: date, owner, decision, reason, affected prompts, eviden
   Packs: `shadowtwins-dev-v1` (research), `shadowtwins-practice-v1` (9), `shadowtwins-ranked-v1` (30).
 * **Affected:** P3 (pack loading, modes), P4 (practice mode), P5 (pilot).
 * **Evidence:** `docs/reports/DEV_POOL_REPORT.md`, `docs/reports/PACKS_V1.md`, `tests/shadowtwins/test_packs.py`.
+
+## 2026-09-25 — P3 — Run-level contract extensions
+* **Decision:** `RunCreate` extends P1's `RunSpec` with optional `pack_id`; `provider` holds the
+  OpenRouter endpoint tag used for `provider.order`. Profiles `prof-standard-1`,
+  `prof-reasoning-low-1`, `prof-reasoning-high-1`; aggregation `agg-1.0.0`; listing policy `lb-1.0.0`;
+  API `api-1.0.0` (`contracts/openapi.json`). The benchmark interface gained two optional hooks
+  (`reference_answer`, `sample_answer`) used only by the mock provider, never for scoring.
+* **Affected:** P4 (typed client), P5. **Evidence:** `docs/BACKEND.md`, `tests/benchserver/*`.
