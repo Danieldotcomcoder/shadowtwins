@@ -1,0 +1,18 @@
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+/data/
+/dist/
+/build/
+*.egg-info/
+node_modules/
+frontend/dist/
+.tokenizer-cache/
+*.db
+*.db-wal
+*.db-shm
+.env
+# Notion export of the coordination hub (source of truth lives in Notion)
+Shadow Twins — Project Hub/
