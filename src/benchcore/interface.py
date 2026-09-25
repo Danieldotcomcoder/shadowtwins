@@ -85,3 +85,13 @@ class BenchmarkModule(ABC):
         evaluation: EvaluationEnvelope | None,
     ) -> BaseModel:
         """Deterministic replay document for inspection views."""
+
+    # --- optional hooks for test doubles (mock providers); never used for scoring -------------
+
+    def reference_answer(self, instance: BaseModel, certificate: BaseModel) -> str | None:
+        """A raw answer text that achieves the certified optimum, if the module can produce one."""
+        return None
+
+    def sample_answer(self, instance: BaseModel, seed: int) -> str | None:
+        """A deterministic pseudo-random answer text (legal or not) for mock testing."""
+        return None
