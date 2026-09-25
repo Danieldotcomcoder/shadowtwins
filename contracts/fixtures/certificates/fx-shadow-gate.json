@@ -1,0 +1,95 @@
+{
+  "schema_version": "shadowtwins.certificate.v1",
+  "core": {
+    "instance_id": "fx-shadow-gate",
+    "instance_hash": "sha256:aaf03d1ad1964bd67772415afe91f68af2696976e9e09d7e20b6afc34162170c",
+    "versions": {
+      "rules": "st-rules-1.0.0",
+      "solver": "st-solver-1.0.0",
+      "evaluator": "st-eval-1.0.0",
+      "protocol": "st-protocol-1.0.0",
+      "generator": "st-gen-1.0.0"
+    },
+    "budget": 1,
+    "solid_editable": 2,
+    "empty_editable": 2,
+    "expected_enumerated_count": 5,
+    "enumerated_count": 5,
+    "legal_count": 4,
+    "v_star": 2,
+    "v_min": 0,
+    "optimal_count": 2,
+    "min_moves_for_optimum": 1,
+    "histogram": {
+      "0": 1,
+      "1": 1,
+      "2": 2
+    },
+    "histogram_by_moves": {
+      "0": {
+        "0": 1
+      },
+      "1": {
+        "1": 1,
+        "2": 2
+      }
+    },
+    "best_witness": {
+      "remove": [
+        0
+      ],
+      "add": [
+        2
+      ],
+      "objective": 2
+    },
+    "worst_witness": {
+      "remove": [],
+      "add": [],
+      "objective": 0
+    },
+    "rejections": {
+      "silhouette": 1,
+      "solid_disconnected": 0
+    },
+    "constraint_totals": {
+      "silhouette_fail": 1,
+      "solid_disconnected": 0,
+      "both": 0
+    },
+    "no_shadow": {
+      "legal_count": 5,
+      "v_star": 2,
+      "histogram": {
+        "0": 2,
+        "1": 1,
+        "2": 2
+      },
+      "best_witness": {
+        "remove": [
+          0
+        ],
+        "add": [
+          2
+        ],
+        "objective": 2
+      }
+    },
+    "exhaustive": true,
+    "admissible": true,
+    "inadmissible_reason": null
+  },
+  "core_hash": "sha256:84b86795b95f1e3982f78cf6f2f251ef961d91ea61adf0e904c261cfeaf4d1cb",
+  "run": {
+    "runtime_ms": 0.284,
+    "created_at": "2026-09-25T21:59:31+00:00",
+    "python": "3.12.13"
+  },
+  "independent_verification": {
+    "status": "verified",
+    "verifier_version": "stverify-1.0.0",
+    "runtime_ms": 2.743,
+    "mismatches": [],
+    "checked_at": "2026-09-25T21:59:31+00:00"
+  }
+}

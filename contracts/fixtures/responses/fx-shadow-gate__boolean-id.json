@@ -1,0 +1,10 @@
+{
+  "instance_id": "fx-shadow-gate",
+  "case": "boolean-id",
+  "raw_text": "{\"remove\":[true],\"add\":[2]}",
+  "completion_meta": {
+    "finish_reason": "stop",
+    "native_finish_reason": null,
+    "refusal": null
+  }
+}

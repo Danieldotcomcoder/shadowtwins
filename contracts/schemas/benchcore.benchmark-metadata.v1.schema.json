@@ -1,0 +1,78 @@
+{
+  "$defs": {
+    "ScoreSemantics": {
+      "additionalProperties": false,
+      "description": "How a benchmark's per-item score is defined, for display and documentation.",
+      "properties": {
+        "formula": {
+          "title": "Formula",
+          "type": "string"
+        },
+        "higher_is_better": {
+          "default": true,
+          "title": "Higher Is Better",
+          "type": "boolean"
+        },
+        "invalid_scores_zero": {
+          "default": true,
+          "title": "Invalid Scores Zero",
+          "type": "boolean"
+        },
+        "notes": {
+          "default": "",
+          "title": "Notes",
+          "type": "string"
+        },
+        "scale_max": {
+          "default": 100.0,
+          "title": "Scale Max",
+          "type": "number"
+        },
+        "scale_min": {
+          "default": 0.0,
+          "title": "Scale Min",
+          "type": "number"
+        }
+      },
+      "required": [
+        "formula"
+      ],
+      "title": "ScoreSemantics",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "benchmark_id": {
+      "title": "Benchmark Id",
+      "type": "string"
+    },
+    "description": {
+      "title": "Description",
+      "type": "string"
+    },
+    "display_name": {
+      "title": "Display Name",
+      "type": "string"
+    },
+    "score": {
+      "$ref": "#/$defs/ScoreSemantics"
+    },
+    "versions": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Versions",
+      "type": "object"
+    }
+  },
+  "required": [
+    "benchmark_id",
+    "display_name",
+    "description",
+    "versions",
+    "score"
+  ],
+  "title": "BenchmarkMetadata",
+  "type": "object"
+}

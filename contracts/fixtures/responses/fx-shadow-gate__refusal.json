@@ -1,0 +1,10 @@
+{
+  "instance_id": "fx-shadow-gate",
+  "case": "refusal",
+  "raw_text": "I can't help with that request.",
+  "completion_meta": {
+    "finish_reason": "stop",
+    "native_finish_reason": null,
+    "refusal": null
+  }
+}

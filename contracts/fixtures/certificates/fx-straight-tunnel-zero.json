@@ -1,0 +1,87 @@
+{
+  "schema_version": "shadowtwins.certificate.v1",
+  "core": {
+    "instance_id": "fx-straight-tunnel-zero",
+    "instance_hash": "sha256:f713c25f1375f9018991bce9398035c107c578cdf5123aca28bb0dfd369bf65f",
+    "versions": {
+      "rules": "st-rules-1.0.0",
+      "solver": "st-solver-1.0.0",
+      "evaluator": "st-eval-1.0.0",
+      "protocol": "st-protocol-1.0.0",
+      "generator": "st-gen-1.0.0"
+    },
+    "budget": 1,
+    "solid_editable": 2,
+    "empty_editable": 2,
+    "expected_enumerated_count": 5,
+    "enumerated_count": 5,
+    "legal_count": 3,
+    "v_star": 0,
+    "v_min": 0,
+    "optimal_count": 3,
+    "min_moves_for_optimum": 0,
+    "histogram": {
+      "0": 3
+    },
+    "histogram_by_moves": {
+      "0": {
+        "0": 1
+      },
+      "1": {
+        "0": 2
+      }
+    },
+    "best_witness": {
+      "remove": [],
+      "add": [],
+      "objective": 0
+    },
+    "worst_witness": {
+      "remove": [],
+      "add": [],
+      "objective": 0
+    },
+    "rejections": {
+      "silhouette": 2,
+      "solid_disconnected": 0
+    },
+    "constraint_totals": {
+      "silhouette_fail": 2,
+      "solid_disconnected": 1,
+      "both": 1
+    },
+    "no_shadow": {
+      "legal_count": 4,
+      "v_star": 1,
+      "histogram": {
+        "0": 3,
+        "1": 1
+      },
+      "best_witness": {
+        "remove": [
+          2
+        ],
+        "add": [
+          1
+        ],
+        "objective": 1
+      }
+    },
+    "exhaustive": true,
+    "admissible": false,
+    "inadmissible_reason": "v_star = 0: no legal edit changes any pair"
+  },
+  "core_hash": "sha256:159c1efb0b2155205999876fba95244a5cfc344cd5e5976daac01b14a4bccc2f",
+  "run": {
+    "runtime_ms": 0.229,
+    "created_at": "2026-09-25T21:59:31+00:00",
+    "python": "3.12.13"
+  },
+  "independent_verification": {
+    "status": "verified",
+    "verifier_version": "stverify-1.0.0",
+    "runtime_ms": 2.229,
+    "mismatches": [],
+    "checked_at": "2026-09-25T21:59:31+00:00"
+  }
+}

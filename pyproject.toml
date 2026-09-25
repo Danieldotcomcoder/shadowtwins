@@ -1,0 +1,59 @@
+[project]
+name = "llmbenchmarks"
+version = "0.1.0"
+description = "Compact, exactly-scored LLM benchmark suite. First benchmark: Shadow Twins."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "pydantic==2.13.5",
+    "fastapi==0.141.1",
+    "uvicorn[standard]==0.54.0",
+    "httpx==0.28.1",
+]
+
+[project.optional-dependencies]
+# Offline token measurement for the frozen tokenizer panel (P2). Not needed at runtime.
+research = [
+    "tiktoken==0.14.0",
+    "tokenizers==0.23.2",
+]
+
+[project.scripts]
+shadowtwins = "shadowtwins.cli:main"
+shadowtwins-verify = "stverify.cli:main"
+benchserver = "benchserver.cli:main"
+
+[dependency-groups]
+dev = [
+    "pytest==9.1.1",
+    "ruff==0.16.9",
+    "pyright==1.1.414",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/benchcore", "src/shadowtwins", "src/stverify", "src/benchserver"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+markers = [
+    "slow: long-running certification or generation checks",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests", "tools"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "RUF"]
+ignore = ["E501", "RUF001", "RUF002", "RUF003"]
+
+[tool.pyright]
+include = ["src"]
+pythonVersion = "3.12"
+typeCheckingMode = "standard"

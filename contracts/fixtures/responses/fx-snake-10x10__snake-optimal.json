@@ -1,0 +1,10 @@
+{
+  "instance_id": "fx-snake-10x10",
+  "case": "snake-optimal",
+  "raw_text": "{\"remove\":[0,1,2],\"add\":[10,11,13]}",
+  "completion_meta": {
+    "finish_reason": "stop",
+    "native_finish_reason": null,
+    "refusal": null
+  }
+}

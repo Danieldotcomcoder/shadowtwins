@@ -1,0 +1,10 @@
+{
+  "instance_id": "fx-shadow-gate",
+  "case": "optimal-fenced",
+  "raw_text": "```json\n{\"add\": [3], \"remove\": [0]}\n```",
+  "completion_meta": {
+    "finish_reason": "stop",
+    "native_finish_reason": null,
+    "refusal": null
+  }
+}

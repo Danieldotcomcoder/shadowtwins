@@ -1,0 +1,10 @@
+{
+  "instance_id": "fx-shadow-gate",
+  "case": "budget-exceeded",
+  "raw_text": "{\"remove\":[0,1],\"add\":[2,3]}",
+  "completion_meta": {
+    "finish_reason": "stop",
+    "native_finish_reason": null,
+    "refusal": null
+  }
+}

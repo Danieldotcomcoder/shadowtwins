@@ -1,0 +1,28 @@
+{
+  "additionalProperties": false,
+  "description": "Relocation answer: ``remove`` and ``add`` are editable-cell IDs, applied simultaneously.",
+  "properties": {
+    "add": {
+      "items": {
+        "type": "integer"
+      },
+      "maxItems": 64,
+      "title": "Add",
+      "type": "array"
+    },
+    "remove": {
+      "items": {
+        "type": "integer"
+      },
+      "maxItems": 64,
+      "title": "Remove",
+      "type": "array"
+    }
+  },
+  "required": [
+    "remove",
+    "add"
+  ],
+  "title": "Edit",
+  "type": "object"
+}

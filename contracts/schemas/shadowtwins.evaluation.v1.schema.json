@@ -1,0 +1,362 @@
+{
+  "$defs": {
+    "Check": {
+      "additionalProperties": false,
+      "properties": {
+        "cells": {
+          "description": "Offending cells, if any.",
+          "items": {
+            "description": "Cell (x, y, z); x = column, y = row, z = layer (0 = bottom).",
+            "maxItems": 3,
+            "minItems": 3,
+            "prefixItems": [
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              },
+              {
+                "maximum": 3,
+                "minimum": 0,
+                "type": "integer"
+              }
+            ],
+            "type": "array"
+          },
+          "title": "Cells",
+          "type": "array"
+        },
+        "code": {
+          "$ref": "#/$defs/CheckCode"
+        },
+        "ids": {
+          "description": "Offending editable IDs, if any.",
+          "items": {
+            "type": "integer"
+          },
+          "title": "Ids",
+          "type": "array"
+        },
+        "message": {
+          "title": "Message",
+          "type": "string"
+        },
+        "status": {
+          "$ref": "#/$defs/CheckStatus"
+        }
+      },
+      "required": [
+        "code",
+        "status",
+        "message"
+      ],
+      "title": "Check",
+      "type": "object"
+    },
+    "CheckCode": {
+      "enum": [
+        "parse",
+        "id_types",
+        "no_duplicates",
+        "source_occupancy",
+        "equal_counts",
+        "budget",
+        "immutable_cells",
+        "silhouette_x",
+        "silhouette_y",
+        "silhouette_z",
+        "solid_connected"
+      ],
+      "title": "CheckCode",
+      "type": "string"
+    },
+    "CheckStatus": {
+      "enum": [
+        "pass",
+        "fail",
+        "skipped"
+      ],
+      "title": "CheckStatus",
+      "type": "string"
+    },
+    "Edit": {
+      "additionalProperties": false,
+      "description": "Relocation answer: ``remove`` and ``add`` are editable-cell IDs, applied simultaneously.",
+      "properties": {
+        "add": {
+          "items": {
+            "type": "integer"
+          },
+          "maxItems": 64,
+          "title": "Add",
+          "type": "array"
+        },
+        "remove": {
+          "items": {
+            "type": "integer"
+          },
+          "maxItems": 64,
+          "title": "Remove",
+          "type": "array"
+        }
+      },
+      "required": [
+        "remove",
+        "add"
+      ],
+      "title": "Edit",
+      "type": "object"
+    },
+    "InvalidCategory": {
+      "enum": [
+        "malformed_json",
+        "invalid_ids_or_types",
+        "duplicate_ids",
+        "wrong_source_occupancy",
+        "unequal_edit_counts",
+        "budget_exceeded",
+        "immutable_cell_modified",
+        "silhouette_changed",
+        "solid_disconnected",
+        "refusal",
+        "truncated"
+      ],
+      "title": "InvalidCategory",
+      "type": "string"
+    },
+    "ParseOutcome": {
+      "additionalProperties": false,
+      "properties": {
+        "category": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/InvalidCategory"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "detail": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "Stable machine sub-code, e.g. prose_wrapped.",
+          "title": "Detail"
+        },
+        "edit": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Edit"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "json_text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "description": "The JSON text that was parsed.",
+          "title": "Json Text"
+        },
+        "message": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Message"
+        },
+        "ok": {
+          "title": "Ok",
+          "type": "boolean"
+        },
+        "parser_version": {
+          "title": "Parser Version",
+          "type": "string"
+        }
+      },
+      "required": [
+        "parser_version",
+        "ok"
+      ],
+      "title": "ParseOutcome",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "category": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/InvalidCategory"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "checks": {
+      "items": {
+        "$ref": "#/$defs/Check"
+      },
+      "title": "Checks",
+      "type": "array"
+    },
+    "closed": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Closed"
+    },
+    "edit": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/Edit"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "final_occupancy": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Final Occupancy"
+    },
+    "instance_hash": {
+      "title": "Instance Hash",
+      "type": "string"
+    },
+    "instance_id": {
+      "title": "Instance Id",
+      "type": "string"
+    },
+    "is_optimal": {
+      "default": false,
+      "title": "Is Optimal",
+      "type": "boolean"
+    },
+    "move_count": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Move Count"
+    },
+    "opened": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Opened"
+    },
+    "parse": {
+      "$ref": "#/$defs/ParseOutcome"
+    },
+    "raw_objective": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "v(B): changed entrance pairs; null if invalid.",
+      "title": "Raw Objective"
+    },
+    "schema_version": {
+      "const": "shadowtwins.evaluation.v1",
+      "default": "shadowtwins.evaluation.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "score": {
+      "description": "100 * v / v_star if valid, else 0.",
+      "maximum": 100,
+      "minimum": 0,
+      "title": "Score",
+      "type": "number"
+    },
+    "v_star": {
+      "minimum": 1,
+      "title": "V Star",
+      "type": "integer"
+    },
+    "valid": {
+      "title": "Valid",
+      "type": "boolean"
+    },
+    "versions": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Versions",
+      "type": "object"
+    }
+  },
+  "required": [
+    "instance_id",
+    "instance_hash",
+    "versions",
+    "parse",
+    "edit",
+    "valid",
+    "category",
+    "checks",
+    "final_occupancy",
+    "raw_objective",
+    "v_star",
+    "score"
+  ],
+  "title": "ShadowTwinsEvaluation",
+  "type": "object"
+}
