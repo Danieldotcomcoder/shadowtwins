@@ -1,0 +1,53 @@
+{
+  "policy_version": "st-policy-1.0.0",
+  "generator_version": "st-gen-1.0.0",
+  "admission": {
+    "min_v_star": 2,
+    "min_partial_levels": 1,
+    "max_optimum_density": 0.25,
+    "min_shadow_rejection_rate": 0.2,
+    "min_shadow_traps": 1,
+    "max_tokens": 800,
+    "token_panel": "st-tokpanel-1.0.0"
+  },
+  "tiers": [
+    {
+      "id": "T1",
+      "name": "single relocation",
+      "budget": 1,
+      "rule": "admitted with budget 1"
+    },
+    {
+      "id": "T2",
+      "name": "paired relocations",
+      "budget": 2,
+      "rule": "admitted with budget 2 and the optimum needs exactly 2 relocations"
+    },
+    {
+      "id": "T3",
+      "name": "coordinated search",
+      "budget": 3,
+      "rule": "admitted with budget 3 and (the optimum needs 3 relocations or the deterministic local search baseline does not reach the optimum)"
+    }
+  ],
+  "selection": {
+    "seed_bases": {
+      "development": 1000000,
+      "practice": 2000000,
+      "ranked": 3000000
+    },
+    "per_tier": {
+      "development": 10,
+      "practice": 3,
+      "ranked": 10
+    },
+    "max_candidates_per_tier": 50000,
+    "procedure": "For each tier, iterate seeds base + tier_offset + k for k = 0, 1, 2, ... with the tier's budget; keep a candidate when it is structurally valid, admitted, matches the tier rule and its geometry key (48-symmetry canonical form of occupancy + entrance set) was not used by any earlier accepted instance in any split; stop at the per-tier target.",
+    "tier_offsets": {
+      "T1": 0,
+      "T2": 100000,
+      "T3": 200000
+    }
+  },
+  "policy_hash": "sha256:372ada53017c81e58dfddf367b9e536bd62e48d805ee888e6ca2a466ce9b95b5"
+}

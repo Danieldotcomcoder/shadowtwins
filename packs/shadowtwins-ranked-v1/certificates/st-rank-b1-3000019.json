@@ -1,0 +1,99 @@
+{
+  "schema_version": "shadowtwins.certificate.v1",
+  "core": {
+    "instance_id": "st-rank-b1-3000019",
+    "instance_hash": "sha256:f54c9fe51539c1668d99d58d5790b671c8d2b4f9023b176b210ae37ea2b1513e",
+    "versions": {
+      "rules": "st-rules-1.0.0",
+      "solver": "st-solver-1.0.0",
+      "evaluator": "st-eval-1.0.0",
+      "protocol": "st-protocol-1.0.0",
+      "generator": "st-gen-1.0.0"
+    },
+    "budget": 1,
+    "solid_editable": 8,
+    "empty_editable": 7,
+    "expected_enumerated_count": 57,
+    "enumerated_count": 57,
+    "legal_count": 45,
+    "v_star": 6,
+    "v_min": 0,
+    "optimal_count": 1,
+    "min_moves_for_optimum": 1,
+    "histogram": {
+      "0": 33,
+      "3": 5,
+      "4": 6,
+      "6": 1
+    },
+    "histogram_by_moves": {
+      "0": {
+        "0": 1
+      },
+      "1": {
+        "0": 32,
+        "3": 5,
+        "4": 6,
+        "6": 1
+      }
+    },
+    "best_witness": {
+      "remove": [
+        2
+      ],
+      "add": [
+        14
+      ],
+      "objective": 6
+    },
+    "worst_witness": {
+      "remove": [],
+      "add": [],
+      "objective": 0
+    },
+    "rejections": {
+      "silhouette": 12,
+      "solid_disconnected": 0
+    },
+    "constraint_totals": {
+      "silhouette_fail": 12,
+      "solid_disconnected": 0,
+      "both": 0
+    },
+    "no_shadow": {
+      "legal_count": 57,
+      "v_star": 6,
+      "histogram": {
+        "0": 41,
+        "3": 5,
+        "4": 9,
+        "6": 2
+      },
+      "best_witness": {
+        "remove": [
+          2
+        ],
+        "add": [
+          14
+        ],
+        "objective": 6
+      }
+    },
+    "exhaustive": true,
+    "admissible": true,
+    "inadmissible_reason": null
+  },
+  "core_hash": "sha256:2987a65098384f713936435f80129ef20763370d2972ea7c87c8f6138a29f33d",
+  "run": {
+    "runtime_ms": 3.961,
+    "created_at": "2026-09-25T22:17:59+00:00",
+    "python": "3.12.13"
+  },
+  "independent_verification": {
+    "status": "verified",
+    "verifier_version": "stverify-1.0.0",
+    "runtime_ms": 72.251,
+    "mismatches": [],
+    "checked_at": "2026-09-25T22:18:06+00:00"
+  }
+}

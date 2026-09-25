@@ -1,0 +1,112 @@
+{
+  "schema_version": "shadowtwins.certificate.v1",
+  "core": {
+    "instance_id": "st-dev-b2-1100009",
+    "instance_hash": "sha256:0e7e374f68b15ec7a387d0a168a4e503cd7604c7205ab28369e3485d8a64c577",
+    "versions": {
+      "rules": "st-rules-1.0.0",
+      "solver": "st-solver-1.0.0",
+      "evaluator": "st-eval-1.0.0",
+      "protocol": "st-protocol-1.0.0",
+      "generator": "st-gen-1.0.0"
+    },
+    "budget": 2,
+    "solid_editable": 8,
+    "empty_editable": 9,
+    "expected_enumerated_count": 1081,
+    "enumerated_count": 1081,
+    "legal_count": 275,
+    "v_star": 13,
+    "v_min": 0,
+    "optimal_count": 21,
+    "min_moves_for_optimum": 2,
+    "histogram": {
+      "0": 120,
+      "7": 77,
+      "12": 57,
+      "13": 21
+    },
+    "histogram_by_moves": {
+      "0": {
+        "0": 1
+      },
+      "1": {
+        "0": 23,
+        "7": 7,
+        "12": 6
+      },
+      "2": {
+        "0": 96,
+        "7": 70,
+        "12": 51,
+        "13": 21
+      }
+    },
+    "best_witness": {
+      "remove": [
+        0,
+        1
+      ],
+      "add": [
+        11,
+        16
+      ],
+      "objective": 13
+    },
+    "worst_witness": {
+      "remove": [],
+      "add": [],
+      "objective": 0
+    },
+    "rejections": {
+      "silhouette": 806,
+      "solid_disconnected": 0
+    },
+    "constraint_totals": {
+      "silhouette_fail": 806,
+      "solid_disconnected": 0,
+      "both": 0
+    },
+    "no_shadow": {
+      "legal_count": 1081,
+      "v_star": 20,
+      "histogram": {
+        "0": 147,
+        "7": 205,
+        "12": 159,
+        "13": 56,
+        "16": 240,
+        "17": 63,
+        "19": 112,
+        "20": 99
+      },
+      "best_witness": {
+        "remove": [
+          0,
+          1
+        ],
+        "add": [
+          10,
+          13
+        ],
+        "objective": 20
+      }
+    },
+    "exhaustive": true,
+    "admissible": true,
+    "inadmissible_reason": null
+  },
+  "core_hash": "sha256:c4c9244d5160e44ca43d3d564cd6d454fc3996b86860d6458ceabdc10c978881",
+  "run": {
+    "runtime_ms": 71.137,
+    "created_at": "2026-09-25T22:17:31+00:00",
+    "python": "3.12.13"
+  },
+  "independent_verification": {
+    "status": "verified",
+    "verifier_version": "stverify-1.0.0",
+    "runtime_ms": 1592.523,
+    "mismatches": [],
+    "checked_at": "2026-09-25T22:17:37+00:00"
+  }
+}

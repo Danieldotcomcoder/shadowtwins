@@ -1,0 +1,97 @@
+{
+  "schema_version": "shadowtwins.certificate.v1",
+  "core": {
+    "instance_id": "st-dev-b1-1000061",
+    "instance_hash": "sha256:5ac660577ef167c6310a8222d0db88ae95ce0cc9dd6def8e39e1d3ca9dbfd56d",
+    "versions": {
+      "rules": "st-rules-1.0.0",
+      "solver": "st-solver-1.0.0",
+      "evaluator": "st-eval-1.0.0",
+      "protocol": "st-protocol-1.0.0",
+      "generator": "st-gen-1.0.0"
+    },
+    "budget": 1,
+    "solid_editable": 6,
+    "empty_editable": 8,
+    "expected_enumerated_count": 49,
+    "enumerated_count": 49,
+    "legal_count": 16,
+    "v_star": 8,
+    "v_min": 0,
+    "optimal_count": 2,
+    "min_moves_for_optimum": 1,
+    "histogram": {
+      "0": 4,
+      "5": 10,
+      "8": 2
+    },
+    "histogram_by_moves": {
+      "0": {
+        "0": 1
+      },
+      "1": {
+        "0": 3,
+        "5": 10,
+        "8": 2
+      }
+    },
+    "best_witness": {
+      "remove": [
+        4
+      ],
+      "add": [
+        13
+      ],
+      "objective": 8
+    },
+    "worst_witness": {
+      "remove": [],
+      "add": [],
+      "objective": 0
+    },
+    "rejections": {
+      "silhouette": 27,
+      "solid_disconnected": 6
+    },
+    "constraint_totals": {
+      "silhouette_fail": 27,
+      "solid_disconnected": 13,
+      "both": 7
+    },
+    "no_shadow": {
+      "legal_count": 36,
+      "v_star": 8,
+      "histogram": {
+        "0": 11,
+        "4": 1,
+        "5": 21,
+        "8": 3
+      },
+      "best_witness": {
+        "remove": [
+          0
+        ],
+        "add": [
+          13
+        ],
+        "objective": 8
+      }
+    },
+    "exhaustive": true,
+    "admissible": true,
+    "inadmissible_reason": null
+  },
+  "core_hash": "sha256:0cafa058e038b254d399d622202d8291df4fb8db6641140df268356cc643ea84",
+  "run": {
+    "runtime_ms": 3.808,
+    "created_at": "2026-09-25T22:17:31+00:00",
+    "python": "3.12.13"
+  },
+  "independent_verification": {
+    "status": "verified",
+    "verifier_version": "stverify-1.0.0",
+    "runtime_ms": 46.519,
+    "mismatches": [],
+    "checked_at": "2026-09-25T22:17:35+00:00"
+  }
+}

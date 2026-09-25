@@ -69,3 +69,18 @@ def canonical_key(occ: int, entrances: list[int], editable: list[int], budget: i
 def instance_canonical_key(inst: ShadowTwinsInstance) -> str:
     return canonical_key(inst.occupancy_mask, inst.entrance_indices, inst.editable_indices,
                          inst.core.budget)
+
+
+def geometry_key(occ: int, entrances: list[int]) -> str:
+    """Symmetry-invariant key of the object and its entrance set only (stricter duplicate rule:
+    the same geometry never appears twice across packs, whatever the editable list or budget)."""
+    best: str | None = None
+    for sym in SYMMETRIES:
+        o = apply_to_mask(sym, occ)
+        ents = sorted(grid.index(*apply_to_coord(sym, grid.coords(i))) for i in entrances)
+        key = canonical_json([grid.occupancy_to_string(o), ents])
+        if best is None or key < best:
+            best = key
+    assert best is not None
+    return best
+

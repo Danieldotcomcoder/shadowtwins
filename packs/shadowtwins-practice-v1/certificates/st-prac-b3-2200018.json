@@ -1,0 +1,110 @@
+{
+  "schema_version": "shadowtwins.certificate.v1",
+  "core": {
+    "instance_id": "st-prac-b3-2200018",
+    "instance_hash": "sha256:aa2a10c1fc23ce4bfdb77d62f00f5224c12cd68f9b25dea58d9dfd6145cd044f",
+    "versions": {
+      "rules": "st-rules-1.0.0",
+      "solver": "st-solver-1.0.0",
+      "evaluator": "st-eval-1.0.0",
+      "protocol": "st-protocol-1.0.0",
+      "generator": "st-gen-1.0.0"
+    },
+    "budget": 3,
+    "solid_editable": 10,
+    "empty_editable": 8,
+    "expected_enumerated_count": 8061,
+    "enumerated_count": 8061,
+    "legal_count": 278,
+    "v_star": 8,
+    "v_min": 0,
+    "optimal_count": 1,
+    "min_moves_for_optimum": 3,
+    "histogram": {
+      "0": 77,
+      "6": 200,
+      "8": 1
+    },
+    "histogram_by_moves": {
+      "0": {
+        "0": 1
+      },
+      "1": {
+        "0": 16,
+        "6": 7
+      },
+      "2": {
+        "0": 40,
+        "6": 67
+      },
+      "3": {
+        "0": 20,
+        "6": 126,
+        "8": 1
+      }
+    },
+    "best_witness": {
+      "remove": [
+        1,
+        4,
+        5
+      ],
+      "add": [
+        11,
+        12,
+        13
+      ],
+      "objective": 8
+    },
+    "worst_witness": {
+      "remove": [],
+      "add": [],
+      "objective": 0
+    },
+    "rejections": {
+      "silhouette": 7604,
+      "solid_disconnected": 179
+    },
+    "constraint_totals": {
+      "silhouette_fail": 7604,
+      "solid_disconnected": 4092,
+      "both": 3913
+    },
+    "no_shadow": {
+      "legal_count": 3969,
+      "v_star": 9,
+      "histogram": {
+        "0": 837,
+        "5": 472,
+        "6": 2003,
+        "8": 15,
+        "9": 642
+      },
+      "best_witness": {
+        "remove": [
+          3
+        ],
+        "add": [
+          14
+        ],
+        "objective": 9
+      }
+    },
+    "exhaustive": true,
+    "admissible": true,
+    "inadmissible_reason": null
+  },
+  "core_hash": "sha256:562b7a3f145b84dfbd3b6dcc577fdba8a1eb8079b423fb96fd52b0b58db29e20",
+  "run": {
+    "runtime_ms": 351.112,
+    "created_at": "2026-09-25T22:17:54+00:00",
+    "python": "3.12.13"
+  },
+  "independent_verification": {
+    "status": "verified",
+    "verifier_version": "stverify-1.0.0",
+    "runtime_ms": 2746.623,
+    "mismatches": [],
+    "checked_at": "2026-09-25T22:17:57+00:00"
+  }
+}

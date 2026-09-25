@@ -1,0 +1,36 @@
+{
+  "per_tier": {
+    "T1": {
+      "noop": 0.0,
+      "random_legal_expected": 33.454841885074444,
+      "random_candidate_expected": 22.028239142939317,
+      "local_search": 100.0,
+      "optimum": 100.0
+    },
+    "T2": {
+      "noop": 0.0,
+      "random_legal_expected": 16.68131649397105,
+      "random_candidate_expected": 7.347759202087822,
+      "local_search": 100.0,
+      "optimum": 100.0
+    },
+    "T3": {
+      "noop": 0.0,
+      "random_legal_expected": 34.81000316174638,
+      "random_candidate_expected": 4.428168487355061,
+      "local_search": 69.44444444444444,
+      "optimum": 100.0
+    }
+  },
+  "pack": {
+    "noop": 0.0,
+    "random_legal_expected": 28.315387180263958,
+    "random_candidate_expected": 11.268055610794066,
+    "local_search": 89.81481481481482,
+    "optimum": 100.0
+  },
+  "local_search": {
+    "version": "st-ls-1.0.0",
+    "evaluation_budget": 400
+  }
+}

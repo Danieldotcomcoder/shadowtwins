@@ -1,0 +1,113 @@
+{
+  "schema_version": "shadowtwins.certificate.v1",
+  "core": {
+    "instance_id": "st-dev-b3-1200033",
+    "instance_hash": "sha256:0a392fee984ee06d955318ae5ecf887fb6b719707b5b1c7af719be133f64b0fd",
+    "versions": {
+      "rules": "st-rules-1.0.0",
+      "solver": "st-solver-1.0.0",
+      "evaluator": "st-eval-1.0.0",
+      "protocol": "st-protocol-1.0.0",
+      "generator": "st-gen-1.0.0"
+    },
+    "budget": 3,
+    "solid_editable": 9,
+    "empty_editable": 8,
+    "expected_enumerated_count": 5785,
+    "enumerated_count": 5785,
+    "legal_count": 2623,
+    "v_star": 9,
+    "v_min": 0,
+    "optimal_count": 216,
+    "min_moves_for_optimum": 2,
+    "histogram": {
+      "0": 2267,
+      "2": 121,
+      "5": 6,
+      "8": 13,
+      "9": 216
+    },
+    "histogram_by_moves": {
+      "0": {
+        "0": 1
+      },
+      "1": {
+        "0": 55
+      },
+      "2": {
+        "0": 537,
+        "2": 13,
+        "8": 1,
+        "9": 20
+      },
+      "3": {
+        "0": 1674,
+        "2": 108,
+        "5": 6,
+        "8": 12,
+        "9": 196
+      }
+    },
+    "best_witness": {
+      "remove": [
+        1,
+        8
+      ],
+      "add": [
+        15,
+        16
+      ],
+      "objective": 9
+    },
+    "worst_witness": {
+      "remove": [],
+      "add": [],
+      "objective": 0
+    },
+    "rejections": {
+      "silhouette": 2190,
+      "solid_disconnected": 972
+    },
+    "constraint_totals": {
+      "silhouette_fail": 2190,
+      "solid_disconnected": 2420,
+      "both": 1448
+    },
+    "no_shadow": {
+      "legal_count": 3365,
+      "v_star": 9,
+      "histogram": {
+        "0": 2591,
+        "2": 135,
+        "5": 6,
+        "8": 29,
+        "9": 604
+      },
+      "best_witness": {
+        "remove": [
+          8
+        ],
+        "add": [
+          16
+        ],
+        "objective": 9
+      }
+    },
+    "exhaustive": true,
+    "admissible": true,
+    "inadmissible_reason": null
+  },
+  "core_hash": "sha256:f830d29996f9ab02785d707b7e1b802eea0b5ae4a6173456443e18f5bd5d111c",
+  "run": {
+    "runtime_ms": 229.379,
+    "created_at": "2026-09-25T22:17:32+00:00",
+    "python": "3.12.13"
+  },
+  "independent_verification": {
+    "status": "verified",
+    "verifier_version": "stverify-1.0.0",
+    "runtime_ms": 4395.68,
+    "mismatches": [],
+    "checked_at": "2026-09-25T22:17:40+00:00"
+  }
+}

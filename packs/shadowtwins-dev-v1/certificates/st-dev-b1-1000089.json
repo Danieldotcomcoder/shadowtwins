@@ -1,0 +1,101 @@
+{
+  "schema_version": "shadowtwins.certificate.v1",
+  "core": {
+    "instance_id": "st-dev-b1-1000089",
+    "instance_hash": "sha256:93de23a1a8969ace80a2390160675af2489bdf2c2ddd2752641e765b9eea6d08",
+    "versions": {
+      "rules": "st-rules-1.0.0",
+      "solver": "st-solver-1.0.0",
+      "evaluator": "st-eval-1.0.0",
+      "protocol": "st-protocol-1.0.0",
+      "generator": "st-gen-1.0.0"
+    },
+    "budget": 1,
+    "solid_editable": 7,
+    "empty_editable": 9,
+    "expected_enumerated_count": 64,
+    "enumerated_count": 64,
+    "legal_count": 37,
+    "v_star": 8,
+    "v_min": 0,
+    "optimal_count": 5,
+    "min_moves_for_optimum": 1,
+    "histogram": {
+      "0": 14,
+      "4": 5,
+      "5": 13,
+      "8": 5
+    },
+    "histogram_by_moves": {
+      "0": {
+        "0": 1
+      },
+      "1": {
+        "0": 13,
+        "4": 5,
+        "5": 13,
+        "8": 5
+      }
+    },
+    "best_witness": {
+      "remove": [
+        0
+      ],
+      "add": [
+        8
+      ],
+      "objective": 8
+    },
+    "worst_witness": {
+      "remove": [],
+      "add": [],
+      "objective": 0
+    },
+    "rejections": {
+      "silhouette": 19,
+      "solid_disconnected": 8
+    },
+    "constraint_totals": {
+      "silhouette_fail": 19,
+      "solid_disconnected": 16,
+      "both": 8
+    },
+    "no_shadow": {
+      "legal_count": 48,
+      "v_star": 10,
+      "histogram": {
+        "0": 14,
+        "4": 7,
+        "5": 13,
+        "7": 3,
+        "8": 10,
+        "10": 1
+      },
+      "best_witness": {
+        "remove": [
+          5
+        ],
+        "add": [
+          13
+        ],
+        "objective": 10
+      }
+    },
+    "exhaustive": true,
+    "admissible": true,
+    "inadmissible_reason": null
+  },
+  "core_hash": "sha256:eb6f58bd9ab26ab41144e572f31a9a6b468120bf99ad62878d86a56c78509ced",
+  "run": {
+    "runtime_ms": 5.301,
+    "created_at": "2026-09-25T22:17:31+00:00",
+    "python": "3.12.13"
+  },
+  "independent_verification": {
+    "status": "verified",
+    "verifier_version": "stverify-1.0.0",
+    "runtime_ms": 67.37,
+    "mismatches": [],
+    "checked_at": "2026-09-25T22:17:35+00:00"
+  }
+}

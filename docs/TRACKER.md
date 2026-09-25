@@ -7,7 +7,7 @@ rule 9 every update below is a *pending* handoff awaiting synchronization to Not
 | Prompt | Status | Agent owner | Branch / worktree | Claimed at | Last heartbeat | Reviewer | Next action |
 |---|---|---|---|---|---|---|---|
 | P1 — Formal engine, exact solver and shared contracts | In review | Claude Code (Opus 5.5), session 6401540c | `p1/formal-engine` → `main` | 2026-09-25T21:40Z | 2026-09-25T22:10Z | self-review only (independent review pending) | Independent reviewer repeats `docs/handoffs/P1.md` commands |
-| P2 — Certified packs, compact prompts and research design | Ready | — | — | — | — | — | Generate development pool; measure shadow activity |
+| P2 — Certified packs, compact prompts and research design | In review | Claude Code (Opus 5.5), session 6401540c | `p2/packs` → `main` | 2026-09-25T22:15Z | 2026-09-25T23:05Z | self-review only (independent review pending) | Independent reviewer repeats `docs/handoffs/P2.md` commands |
 | P3 — FastAPI, OpenRouter and durable evaluation runner | Ready | — | — | — | — | — | Mock-provider vertical slice, then durable execution |
 | P4 — Polished React interface and Three.js comparisons | Not started | — | — | — | — | — | Build comparison view on `contracts/fixtures/replays` |
 | P5 — Integration, single-container release and research pilot | Not started | — | — | — | — | — | After P1–P4 |

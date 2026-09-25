@@ -36,3 +36,18 @@ Append-only. Each entry: date, owner, decision, reason, affected prompts, eviden
   silhouette rule (`core.no_shadow`). It is a research diagnostic (spec §14) and never used for
   scores.
 * **Affected:** P2 research design.
+
+## 2026-09-25 — P2 — Frozen tokenizer panel st-tokpanel-1.0.0
+* **Decision:** Ceiling 800 tokens over the single user message under seven tokenizers: tiktoken
+  o200k_base and cl100k_base; Hugging Face tokenizer.json for Llama 3.1 (NousResearch mirror), Qwen 2.5,
+  DeepSeek V3, Mistral Nemo, Phi-3.5, each pinned by revision and sha256. Gemma is gated and excluded;
+  Anthropic/Google tokenizers are not public. No chat-template tokens are counted.
+* **Affected:** P3 (records provider usage separately), P5. **Evidence:** `src/shadowtwins/tokens.py`.
+
+## 2026-09-25 — P2 — Admission/tier policy st-policy-1.0.0 and packs v1
+* **Decision:** Thresholds, tiers (T1 b=1; T2 b=2 & optimum needs 2 moves; T3 b=3 & optimum needs 3
+  moves or defeats local search), disjoint seed ranges and geometry-level duplicate rule as in
+  `docs/research/ADMISSION_POLICY.md`; frozen in commit `3c361ba` before practice/ranked generation.
+  Packs: `shadowtwins-dev-v1` (research), `shadowtwins-practice-v1` (9), `shadowtwins-ranked-v1` (30).
+* **Affected:** P3 (pack loading, modes), P4 (practice mode), P5 (pilot).
+* **Evidence:** `docs/reports/DEV_POOL_REPORT.md`, `docs/reports/PACKS_V1.md`, `tests/shadowtwins/test_packs.py`.

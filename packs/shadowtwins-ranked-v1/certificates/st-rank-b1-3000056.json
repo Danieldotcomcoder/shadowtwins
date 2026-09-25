@@ -1,0 +1,97 @@
+{
+  "schema_version": "shadowtwins.certificate.v1",
+  "core": {
+    "instance_id": "st-rank-b1-3000056",
+    "instance_hash": "sha256:a5b34ad393a64c67362f4e8bf10c6a6ca9c53975a9421b450dff68d37a135663",
+    "versions": {
+      "rules": "st-rules-1.0.0",
+      "solver": "st-solver-1.0.0",
+      "evaluator": "st-eval-1.0.0",
+      "protocol": "st-protocol-1.0.0",
+      "generator": "st-gen-1.0.0"
+    },
+    "budget": 1,
+    "solid_editable": 8,
+    "empty_editable": 6,
+    "expected_enumerated_count": 49,
+    "enumerated_count": 49,
+    "legal_count": 29,
+    "v_star": 6,
+    "v_min": 0,
+    "optimal_count": 1,
+    "min_moves_for_optimum": 1,
+    "histogram": {
+      "0": 24,
+      "5": 4,
+      "6": 1
+    },
+    "histogram_by_moves": {
+      "0": {
+        "0": 1
+      },
+      "1": {
+        "0": 23,
+        "5": 4,
+        "6": 1
+      }
+    },
+    "best_witness": {
+      "remove": [
+        5
+      ],
+      "add": [
+        11
+      ],
+      "objective": 6
+    },
+    "worst_witness": {
+      "remove": [],
+      "add": [],
+      "objective": 0
+    },
+    "rejections": {
+      "silhouette": 20,
+      "solid_disconnected": 0
+    },
+    "constraint_totals": {
+      "silhouette_fail": 20,
+      "solid_disconnected": 0,
+      "both": 0
+    },
+    "no_shadow": {
+      "legal_count": 49,
+      "v_star": 10,
+      "histogram": {
+        "0": 28,
+        "5": 5,
+        "6": 14,
+        "10": 2
+      },
+      "best_witness": {
+        "remove": [
+          1
+        ],
+        "add": [
+          12
+        ],
+        "objective": 10
+      }
+    },
+    "exhaustive": true,
+    "admissible": true,
+    "inadmissible_reason": null
+  },
+  "core_hash": "sha256:3a993dfa3bded7f1db6a866a3176daba11f1d45e0d43d173c1b90d59781e40c4",
+  "run": {
+    "runtime_ms": 3.987,
+    "created_at": "2026-09-25T22:18:03+00:00",
+    "python": "3.12.13"
+  },
+  "independent_verification": {
+    "status": "verified",
+    "verifier_version": "stverify-1.0.0",
+    "runtime_ms": 85.155,
+    "mismatches": [],
+    "checked_at": "2026-09-25T22:18:06+00:00"
+  }
+}

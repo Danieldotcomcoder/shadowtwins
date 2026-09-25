@@ -1,0 +1,126 @@
+{
+  "schema_version": "shadowtwins.certificate.v1",
+  "core": {
+    "instance_id": "st-dev-b3-1200168",
+    "instance_hash": "sha256:09f688048cc7695f47514ad538a4f965aef74197f937d45f74c0b01150c9bd4b",
+    "versions": {
+      "rules": "st-rules-1.0.0",
+      "solver": "st-solver-1.0.0",
+      "evaluator": "st-eval-1.0.0",
+      "protocol": "st-protocol-1.0.0",
+      "generator": "st-gen-1.0.0"
+    },
+    "budget": 3,
+    "solid_editable": 8,
+    "empty_editable": 7,
+    "expected_enumerated_count": 2605,
+    "enumerated_count": 2605,
+    "legal_count": 654,
+    "v_star": 14,
+    "v_min": 0,
+    "optimal_count": 35,
+    "min_moves_for_optimum": 2,
+    "histogram": {
+      "0": 233,
+      "2": 17,
+      "4": 66,
+      "8": 303,
+      "14": 35
+    },
+    "histogram_by_moves": {
+      "0": {
+        "0": 1
+      },
+      "1": {
+        "0": 23,
+        "2": 3,
+        "8": 6
+      },
+      "2": {
+        "0": 89,
+        "2": 8,
+        "4": 12,
+        "8": 86,
+        "14": 6
+      },
+      "3": {
+        "0": 120,
+        "2": 6,
+        "4": 54,
+        "8": 211,
+        "14": 29
+      }
+    },
+    "best_witness": {
+      "remove": [
+        0,
+        5
+      ],
+      "add": [
+        12,
+        13
+      ],
+      "objective": 14
+    },
+    "worst_witness": {
+      "remove": [],
+      "add": [],
+      "objective": 0
+    },
+    "rejections": {
+      "silhouette": 1762,
+      "solid_disconnected": 189
+    },
+    "constraint_totals": {
+      "silhouette_fail": 1762,
+      "solid_disconnected": 531,
+      "both": 342
+    },
+    "no_shadow": {
+      "legal_count": 2074,
+      "v_star": 21,
+      "histogram": {
+        "0": 233,
+        "2": 331,
+        "4": 139,
+        "5": 52,
+        "6": 236,
+        "8": 482,
+        "9": 50,
+        "12": 225,
+        "14": 278,
+        "17": 26,
+        "21": 22
+      },
+      "best_witness": {
+        "remove": [
+          0,
+          3,
+          5
+        ],
+        "add": [
+          12,
+          13,
+          14
+        ],
+        "objective": 21
+      }
+    },
+    "exhaustive": true,
+    "admissible": true,
+    "inadmissible_reason": null
+  },
+  "core_hash": "sha256:b1e173e7d1eea08b7aa6fbb251837aaa622fba56a4a23208d9c91cc6cfa4d824",
+  "run": {
+    "runtime_ms": 185.801,
+    "created_at": "2026-09-25T22:17:34+00:00",
+    "python": "3.12.13"
+  },
+  "independent_verification": {
+    "status": "verified",
+    "verifier_version": "stverify-1.0.0",
+    "runtime_ms": 2419.719,
+    "mismatches": [],
+    "checked_at": "2026-09-25T22:17:39+00:00"
+  }
+}
