@@ -59,3 +59,12 @@ Append-only. Each entry: date, owner, decision, reason, affected prompts, eviden
   API `api-1.0.0` (`contracts/openapi.json`). The benchmark interface gained two optional hooks
   (`reference_answer`, `sample_answer`) used only by the mock provider, never for scoring.
 * **Affected:** P4 (typed client), P5. **Evidence:** `docs/BACKEND.md`, `tests/benchserver/*`.
+
+## 2026-09-26 — P5 — Release packaging and pilot defaults
+* **Decision:** One image `shadowtwins:0.1.0` (Python 3.12.13-slim with a Node 22.16 build stage, uv
+  0.11.29, tini, uid 10001, port 8000, volume /data, `benchserver supervise`). Container auth defaults
+  to `token` when `ST_OPERATOR_TOKEN` is set. Public catalog requests never carry the API key. Pilot
+  defaults: Llama 3.1 8B (small) and Llama 3.3 70B (larger), Standard track, cheapest compatible
+  pinned endpoint, total cap required.
+* **Affected:** operators; P5 pilot. **Evidence:** `docs/reports/CONTAINER_ACCEPTANCE.md`,
+  `docs/reports/RELEASE_CHECK.md`.

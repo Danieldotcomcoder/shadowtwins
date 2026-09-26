@@ -157,7 +157,8 @@ class OpenRouterProvider(Provider):
         return {"Authorization": f"Bearer {self._key}"} if self._key else {}
 
     async def list_models(self) -> list[ModelInfo]:
-        resp = await self._client.get("/models", headers=self._auth())
+        # The catalog is public: never send the key where it is not needed.
+        resp = await self._client.get("/models")
         resp.raise_for_status()
         out = []
         for d in resp.json().get("data", []):
@@ -168,7 +169,7 @@ class OpenRouterProvider(Provider):
         return out
 
     async def list_endpoints(self, model_id: str) -> list[EndpointInfo]:
-        resp = await self._client.get(f"/models/{model_id}/endpoints", headers=self._auth())
+        resp = await self._client.get(f"/models/{model_id}/endpoints")
         resp.raise_for_status()
         data = resp.json().get("data") or {}
         return [parse_endpoint(e) for e in data.get("endpoints") or []]
