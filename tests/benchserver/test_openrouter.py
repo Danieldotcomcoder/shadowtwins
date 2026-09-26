@@ -83,10 +83,12 @@ def test_list_models_filters_to_text_and_uses_public_endpoint():
 
     def handler(request: httpx.Request) -> httpx.Response:
         seen["path"] = request.url.path
+        seen["auth"] = request.headers.get("authorization")
         return httpx.Response(200, json=MODELS)
 
     models = run(provider(handler).list_models())
     assert seen["path"] == "/api/v1/models" and {m.model_id for m in models} >= {"openai/gpt-4o-mini"}
+    assert seen["auth"] is None  # the public catalog never receives the key
 
 
 def test_request_pins_endpoint_and_disables_fallbacks():

@@ -1,0 +1,243 @@
+{
+  "kind": "mock dry run (NOT a pilot)",
+  "generated_at": "2026-09-26T05:05:57Z",
+  "pack": "shadowtwins-ranked-v1",
+  "cap_usd": 2.0,
+  "spent_usd": 0.023870000000000006,
+  "within_cap": true,
+  "wall_s": 6.2,
+  "completed_models": 2,
+  "results": [
+    {
+      "role": "small",
+      "run_id": "run_20260926_050551_8bb2af",
+      "model_id": "mock/random",
+      "endpoint": "mock-endpoint",
+      "state": "completed",
+      "ranked": false,
+      "leaderboard_eligible": false,
+      "ineligible_reasons": [
+        "mock provider (test double)"
+      ],
+      "scores": {
+        "aggregation_version": "agg-1.0.0",
+        "scheduled": 30,
+        "completed": 30,
+        "states": {
+          "completed": 30
+        },
+        "official": true,
+        "overall": 6.571428571428572,
+        "provisional_overall": 6.571428571428572,
+        "tiers": {
+          "T1": 6.666666666666667,
+          "T2": 5.714285714285714,
+          "T3": 7.333333333333334
+        },
+        "interval_95": [
+          1.1111111111111112,
+          13.587301587301587
+        ],
+        "valid_rate": 0.6,
+        "conditional_quality": 10.952380952380954,
+        "optimal_rate": 0.0,
+        "categories": {
+          "valid": 18,
+          "silhouette_changed": 11,
+          "solid_disconnected": 1
+        },
+        "instances": 30
+      },
+      "cost": {
+        "spend_limit_usd": 1.0,
+        "spent_usd": 0.011909000000000003,
+        "reserved_usd": 1.0408340855860843e-17,
+        "pricing": {
+          "completion": 2e-06,
+          "internal_reasoning": null,
+          "prompt": 1e-06,
+          "request": null
+        },
+        "pricing_known": true,
+        "estimated_cost_attempts": 0,
+        "uncertain_cost_attempts": 0
+      },
+      "usage": {
+        "prompt_tokens": 11549,
+        "completion_tokens": 180,
+        "reasoning_tokens": 0,
+        "attempts": 30
+      },
+      "latency_ms": {
+        "mean": 5.0,
+        "median": 5.0,
+        "n": 30
+      },
+      "consistency": {
+        "observed_providers": [
+          "Mock"
+        ],
+        "observed_models": [
+          "mock/random"
+        ],
+        "provider_matches_pin": true,
+        "model_matches_request": true,
+        "provider_unreported_on_some_responses": false
+      },
+      "request": {
+        "allow_fallbacks": false,
+        "endpoint": "mock-endpoint",
+        "model_id": "mock/random",
+        "params": {
+          "max_tokens": 8192,
+          "temperature": 0.0
+        },
+        "settings": {
+          "max_tokens": 8192,
+          "profile": "standard",
+          "profile_version": "prof-standard-1",
+          "reasoning": {
+            "note": "model default",
+            "requested": null,
+            "sent": false
+          },
+          "temperature": {
+            "requested": 0.0,
+            "sent": true
+          }
+        }
+      },
+      "h1_contrast": {
+        "estimate": 0.14285714285714324,
+        "interval_95": [
+          -11.714285714285715,
+          16.666666666666668
+        ],
+        "direction_predicted": "positive"
+      },
+      "h2_shadow_validity": {
+        "correlation": -0.16565476812232155,
+        "n": 30
+      }
+    },
+    {
+      "role": "larger",
+      "run_id": "run_20260926_050551_2250bc",
+      "model_id": "mock/optimal",
+      "endpoint": "mock-endpoint",
+      "state": "completed",
+      "ranked": false,
+      "leaderboard_eligible": false,
+      "ineligible_reasons": [
+        "mock provider (test double)"
+      ],
+      "scores": {
+        "aggregation_version": "agg-1.0.0",
+        "scheduled": 30,
+        "completed": 30,
+        "states": {
+          "completed": 30
+        },
+        "official": true,
+        "overall": 100.0,
+        "provisional_overall": 100.0,
+        "tiers": {
+          "T1": 100.0,
+          "T2": 100.0,
+          "T3": 100.0
+        },
+        "interval_95": [
+          100.0,
+          100.0
+        ],
+        "valid_rate": 1.0,
+        "conditional_quality": 100.0,
+        "optimal_rate": 1.0,
+        "categories": {
+          "valid": 30
+        },
+        "instances": 30
+      },
+      "cost": {
+        "spend_limit_usd": 1.0,
+        "spent_usd": 0.011961000000000003,
+        "reserved_usd": 1.0408340855860843e-17,
+        "pricing": {
+          "completion": 2e-06,
+          "internal_reasoning": null,
+          "prompt": 1e-06,
+          "request": null
+        },
+        "pricing_known": true,
+        "estimated_cost_attempts": 0,
+        "uncertain_cost_attempts": 0
+      },
+      "usage": {
+        "prompt_tokens": 11549,
+        "completion_tokens": 206,
+        "reasoning_tokens": 0,
+        "attempts": 30
+      },
+      "latency_ms": {
+        "mean": 5.0,
+        "median": 5.0,
+        "n": 30
+      },
+      "consistency": {
+        "observed_providers": [
+          "Mock"
+        ],
+        "observed_models": [
+          "mock/optimal"
+        ],
+        "provider_matches_pin": true,
+        "model_matches_request": true,
+        "provider_unreported_on_some_responses": false
+      },
+      "request": {
+        "allow_fallbacks": false,
+        "endpoint": "mock-endpoint",
+        "model_id": "mock/optimal",
+        "params": {
+          "max_tokens": 8192,
+          "temperature": 0.0
+        },
+        "settings": {
+          "max_tokens": 8192,
+          "profile": "standard",
+          "profile_version": "prof-standard-1",
+          "reasoning": {
+            "note": "model default",
+            "requested": null,
+            "sent": false
+          },
+          "temperature": {
+            "requested": 0.0,
+            "sent": true
+          }
+        }
+      },
+      "h1_contrast": {
+        "estimate": 0.0,
+        "interval_95": [
+          0.0,
+          0.0
+        ],
+        "direction_predicted": "positive"
+      },
+      "h2_shadow_validity": {
+        "correlation": null,
+        "n": 30,
+        "note": "validity is constant; correlation undefined"
+      }
+    }
+  ],
+  "baselines": {
+    "noop": 0.0,
+    "random_legal_expected": 23.98640804652643,
+    "random_candidate_expected": 7.964501060961813,
+    "local_search": 75.91219891219892,
+    "optimum": 100.0
+  },
+  "summary": "mock/random: completed, overall 6.571428571428572; mock/optimal: completed, overall 100.0; spent $0.0239 of $2.00"
+}

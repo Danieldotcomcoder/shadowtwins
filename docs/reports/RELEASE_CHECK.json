@@ -1,0 +1,152 @@
+{
+  "counts": {
+    "pass": 21,
+    "fail": 0,
+    "blocked": 1,
+    "not_run": 0
+  },
+  "gates": [
+    {
+      "gate": "python lint (ruff)",
+      "status": "pass",
+      "evidence": "All checks passed!",
+      "command": "uv run --extra research ruff check src tests tools",
+      "seconds": 0.1
+    },
+    {
+      "gate": "python types (pyright)",
+      "status": "pass",
+      "evidence": "0 errors, 0 warnings, 0 informations",
+      "command": "uv run --extra research pyright",
+      "seconds": 5.5
+    },
+    {
+      "gate": "python test suite",
+      "status": "pass",
+      "evidence": "167 passed, 1 skipped in 39.26s",
+      "command": "uv run --extra research pytest -q -o addopts= -p no:warnings",
+      "seconds": 39.9
+    },
+    {
+      "gate": "benchmark contracts unchanged",
+      "status": "pass",
+      "evidence": "contracts up to date",
+      "command": "uv run --extra research shadowtwins export-contracts --check",
+      "seconds": 0.4
+    },
+    {
+      "gate": "API contract unchanged",
+      "status": "pass",
+      "evidence": "openapi up to date",
+      "command": "uv run --extra research benchserver export-openapi --check",
+      "seconds": 0.9
+    },
+    {
+      "gate": "every ranked/practice/dev certificate independently reproduced",
+      "status": "pass",
+      "evidence": "69/69 certificates reproduced; 0 file-hash problems; 17.7 s",
+      "command": "uv run --extra research shadowtwins-verify --jobs 8 packs/shadowtwins-ranked-v1 packs/shadowtwins-practice-v1 packs/shadowtwins-dev-v1",
+      "seconds": 17.9
+    },
+    {
+      "gate": "token ceiling re-measured under the frozen panel",
+      "status": "pass",
+      "evidence": "39 practice+ranked prompts re-rendered; panel st-tokpanel-1.0.0 max 699 \u2264 800; 0 differ from manifests",
+      "command": "tools/release_check.py (token_recount)"
+    },
+    {
+      "gate": "offline score recomputation and UI replay consistency (independent verifier)",
+      "status": "pass",
+      "evidence": "mock/random standard run: 30/30 evaluated, overall 6.5714; re-evaluation mismatches 0; CSV recomputation equal: True; 90 replay states checked against stverify, 0 problems",
+      "command": "tools/release_check.py (end_to_end_consistency)",
+      "seconds": 0.9
+    },
+    {
+      "gate": "frontend unit tests (fixture cross-checks, contract drift)",
+      "status": "pass",
+      "evidence": "Tests  44 passed (44)",
+      "command": "pnpm test",
+      "seconds": 23.1
+    },
+    {
+      "gate": "frontend production build",
+      "status": "pass",
+      "evidence": "\u001b[32m\u2713 built in 3.28s\u001b[39m",
+      "command": "pnpm build",
+      "seconds": 10.0
+    },
+    {
+      "gate": "frontend end-to-end + accessibility (Playwright, axe)",
+      "status": "pass",
+      "evidence": "10 passed (55.6s)",
+      "command": "pnpm e2e",
+      "seconds": 58.5
+    },
+    {
+      "gate": "container: container becomes ready (migrations, packs, API, worker)",
+      "status": "pass",
+      "evidence": "ready after 2s",
+      "command": "tools/container_acceptance.py"
+    },
+    {
+      "gate": "container: non-root user, one exposed port",
+      "status": "pass",
+      "evidence": "uid 10001; exposed ['8000/tcp']; image 251MB",
+      "command": "tools/container_acceptance.py"
+    },
+    {
+      "gate": "container: docker healthcheck",
+      "status": "pass",
+      "evidence": "docker HEALTHCHECK reports healthy",
+      "command": "tools/container_acceptance.py"
+    },
+    {
+      "gate": "container: frontend served; run controls require the operator token",
+      "status": "pass",
+      "evidence": "SPA served on the same origin; unauthenticated run creation \u2192 401",
+      "command": "tools/container_acceptance.py"
+    },
+    {
+      "gate": "container: mock run end to end (API, worker, SSE, exports, offline re-evaluation)",
+      "status": "pass",
+      "evidence": "run_20260926_050200_936d8e: 9/9 evaluated, score 100.0 official, SSE replay 9 job_completed, CSV + re-evaluation match",
+      "command": "tools/container_acceptance.py"
+    },
+    {
+      "gate": "container: secrets never leave the server",
+      "status": "pass",
+      "evidence": "key and token absent from container logs, log files and 5 API responses",
+      "command": "tools/container_acceptance.py"
+    },
+    {
+      "gate": "container: restart keeps data",
+      "status": "pass",
+      "evidence": "run and scores intact after docker restart (named volume /data)",
+      "command": "tools/container_acceptance.py"
+    },
+    {
+      "gate": "container: hard crash recovery",
+      "status": "pass",
+      "evidence": "SIGKILL mid-run \u2192 2 in-flight job(s) marked uncertain (never silently re-sent), run incomplete with no official total; explicit rerun \u2192 completed, score 100.0",
+      "command": "tools/container_acceptance.py"
+    },
+    {
+      "gate": "container: graceful shutdown",
+      "status": "pass",
+      "evidence": "docker stop \u2192 exit code 0, in-flight requests settled; resumed after start and completed",
+      "command": "tools/container_acceptance.py"
+    },
+    {
+      "gate": "container: WAL-safe backup and restore",
+      "status": "pass",
+      "evidence": "online backup (integrity ok); restore returned the database to 3 runs",
+      "command": "tools/container_acceptance.py"
+    },
+    {
+      "gate": "live pilot (small + larger model, explicit cap)",
+      "status": "blocked",
+      "evidence": "OPENROUTER_API_KEY is not set in this environment",
+      "command": "OPENROUTER_API_KEY=... uv run python tools/pilot.py --cap 2.00 --yes"
+    }
+  ]
+}

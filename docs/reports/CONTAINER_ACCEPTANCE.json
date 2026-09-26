@@ -1,0 +1,70 @@
+{
+  "image": "shadowtwins:0.1.0",
+  "image_size": "251MB",
+  "docker_server": "28.2.2",
+  "passed": 10,
+  "total": 10,
+  "results": [
+    {
+      "gate": "container becomes ready (migrations, packs, API, worker)",
+      "status": "pass",
+      "detail": "ready after 2s",
+      "seconds": 2.2
+    },
+    {
+      "gate": "non-root user, one exposed port",
+      "status": "pass",
+      "detail": "uid 10001; exposed ['8000/tcp']; image 251MB",
+      "seconds": 0.2
+    },
+    {
+      "gate": "docker healthcheck",
+      "status": "pass",
+      "detail": "docker HEALTHCHECK reports healthy",
+      "seconds": 6.1
+    },
+    {
+      "gate": "frontend served; run controls require the operator token",
+      "status": "pass",
+      "detail": "SPA served on the same origin; unauthenticated run creation \u2192 401",
+      "seconds": 0.1
+    },
+    {
+      "gate": "mock run end to end (API, worker, SSE, exports, offline re-evaluation)",
+      "status": "pass",
+      "detail": "run_20260926_050200_936d8e: 9/9 evaluated, score 100.0 official, SSE replay 9 job_completed, CSV + re-evaluation match",
+      "seconds": 2.6
+    },
+    {
+      "gate": "secrets never leave the server",
+      "status": "pass",
+      "detail": "key and token absent from container logs, log files and 5 API responses",
+      "seconds": 0.6
+    },
+    {
+      "gate": "restart keeps data",
+      "status": "pass",
+      "detail": "run and scores intact after docker restart (named volume /data)",
+      "seconds": 3.6
+    },
+    {
+      "gate": "hard crash recovery",
+      "status": "pass",
+      "detail": "SIGKILL mid-run \u2192 2 in-flight job(s) marked uncertain (never silently re-sent), run incomplete with no official total; explicit rerun \u2192 completed, score 100.0",
+      "seconds": 37.1
+    },
+    {
+      "gate": "graceful shutdown",
+      "status": "pass",
+      "detail": "docker stop \u2192 exit code 0, in-flight requests settled; resumed after start and completed",
+      "seconds": 6.2
+    },
+    {
+      "gate": "WAL-safe backup and restore",
+      "status": "pass",
+      "detail": "online backup (integrity ok); restore returned the database to 3 runs",
+      "seconds": 7.2
+    }
+  ],
+  "log_tail": " server process [8]\nINFO:     Waiting for application startup.\nINFO:     Application startup complete.\nINFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)\n2026-09-26 05:02:10,288 INFO benchserver.supervisor: preparing database: {'migrations_applied': [], 'packs': {'loaded': [], 'skipped': ['shadowtwins-dev-v1', 'shadowtwins-practice-v1', 'shadowtwins-ranked-v1'], 'errors': []}}\n2026-09-26 05:02:10,289 INFO benchserver.supervisor: started api (pid 8)\n2026-09-26 05:02:10,289 INFO benchserver.supervisor: started worker (pid 9)\n2026-09-26 05:02:10,885 INFO benchserver.worker: worker w-fd0430a59ef4-9-1585 started\nINFO:     Started server process [8]\nINFO:     Waiting for application startup.\nINFO:     Application startup complete.\nINFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)\n2026-09-26 05:02:46,497 INFO benchserver.supervisor: received signal 15; stopping\n2026-09-26 05:02:46,771 INFO benchserver.worker: waiting up to 30s for 2 in-flight requests\nINFO:     Shutting down\n2026-09-26 05:02:46,850 INFO benchserver.worker: worker w-fd0430a59ef4-9-1585 stopped\nINFO:     Waiting for application shutdown.\nINFO:     Application shutdown complete.\nINFO:     Finished server process [8]\n2026-09-26 05:02:46,934 INFO benchserver.supervisor: supervisor stopped\n2026-09-26 05:02:48,436 INFO benchserver.supervisor: preparing database: {'migrations_applied': [], 'packs': {'loaded': [], 'skipped': ['shadowtwins-dev-v1', 'shadowtwins-practice-v1', 'shadowtwins-ranked-v1'], 'errors': []}}\n2026-09-26 05:02:48,436 INFO benchserver.supervisor: started api (pid 8)\n2026-09-26 05:02:48,437 INFO benchserver.supervisor: started worker (pid 9)\n2026-09-26 05:02:49,062 INFO benchserver.worker: worker w-fd0430a59ef4-9-fe90 started\nINFO:     Started server process [8]\nINFO:     Waiting for application startup.\nINFO:     Application startup complete.\nINFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)\n2026-09-26 05:02:53,500 INFO benchserver.supervisor: received signal 15; stopping\nINFO:     Shutting down\n2026-09-26 05:02:53,965 INFO benchserver.worker: worker w-fd0430a59ef4-9-fe90 stopped\nINFO:     Waiting for application shutdown.\nINFO:     Application shutdown complete.\nINFO:     Finished server process [8]\n2026-09-26 05:02:54,103 INFO benchserver.supervisor: supervisor stopped\n2026-09-26 05:02:56,297 INFO benchserver.supervisor: preparing database: {'migrations_applied': [], 'packs': {'loaded': [], 'skipped': ['shadowtwins-dev-v1', 'shadowtwins-practice-v1', 'shadowtwins-ranked-v1'], 'errors': []}}\n2026-09-26 05:02:56,298 INFO benchserver.supervisor: started api (pid 8)\n2026-09-26 05:02:56,298 INFO benchserver.supervisor: started worker (pid 9)\n2026-09-26 05:02:56,906 INFO benchserver.worker: worker w-fd0430a59ef4-9-f591 started\nINFO:     Started server process [8]\nINFO:     Waiting for application startup.\nINFO:     Application startup complete.\nINFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)\n"
+}
