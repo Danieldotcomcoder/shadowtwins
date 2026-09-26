@@ -18,14 +18,14 @@
       "status": "pass",
       "evidence": "0 errors, 0 warnings, 0 informations",
       "command": "uv run --extra research pyright",
-      "seconds": 5.5
+      "seconds": 5.4
     },
     {
       "gate": "python test suite",
       "status": "pass",
-      "evidence": "167 passed, 1 skipped in 39.26s",
+      "evidence": "167 passed, 1 skipped in 48.03s",
       "command": "uv run --extra research pytest -q -o addopts= -p no:warnings",
-      "seconds": 39.9
+      "seconds": 48.7
     },
     {
       "gate": "benchmark contracts unchanged",
@@ -44,9 +44,9 @@
     {
       "gate": "every ranked/practice/dev certificate independently reproduced",
       "status": "pass",
-      "evidence": "69/69 certificates reproduced; 0 file-hash problems; 17.7 s",
+      "evidence": "69/69 certificates reproduced; 0 file-hash problems; 15.86 s",
       "command": "uv run --extra research shadowtwins-verify --jobs 8 packs/shadowtwins-ranked-v1 packs/shadowtwins-practice-v1 packs/shadowtwins-dev-v1",
-      "seconds": 17.9
+      "seconds": 16.1
     },
     {
       "gate": "token ceiling re-measured under the frozen panel",
@@ -59,28 +59,28 @@
       "status": "pass",
       "evidence": "mock/random standard run: 30/30 evaluated, overall 6.5714; re-evaluation mismatches 0; CSV recomputation equal: True; 90 replay states checked against stverify, 0 problems",
       "command": "tools/release_check.py (end_to_end_consistency)",
-      "seconds": 0.9
+      "seconds": 1.7
     },
     {
       "gate": "frontend unit tests (fixture cross-checks, contract drift)",
       "status": "pass",
       "evidence": "Tests  44 passed (44)",
       "command": "pnpm test",
-      "seconds": 23.1
+      "seconds": 3.2
     },
     {
       "gate": "frontend production build",
       "status": "pass",
-      "evidence": "\u001b[32m\u2713 built in 3.28s\u001b[39m",
+      "evidence": "\u2713 built in 542ms",
       "command": "pnpm build",
-      "seconds": 10.0
+      "seconds": 6.3
     },
     {
       "gate": "frontend end-to-end + accessibility (Playwright, axe)",
       "status": "pass",
-      "evidence": "10 passed (55.6s)",
+      "evidence": "10 passed (53.3s)",
       "command": "pnpm e2e",
-      "seconds": 58.5
+      "seconds": 54.6
     },
     {
       "gate": "container: container becomes ready (migrations, packs, API, worker)",
@@ -109,7 +109,7 @@
     {
       "gate": "container: mock run end to end (API, worker, SSE, exports, offline re-evaluation)",
       "status": "pass",
-      "evidence": "run_20260926_050200_936d8e: 9/9 evaluated, score 100.0 official, SSE replay 9 job_completed, CSV + re-evaluation match",
+      "evidence": "run_20260926_052013_acc514: 9/9 evaluated, score 100.0 official, SSE replay 9 job_completed, CSV + re-evaluation match",
       "command": "tools/container_acceptance.py"
     },
     {
