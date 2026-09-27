@@ -68,3 +68,22 @@ Append-only. Each entry: date, owner, decision, reason, affected prompts, eviden
   pinned endpoint, total cap required.
 * **Affected:** operators; P5 pilot. **Evidence:** `docs/reports/CONTAINER_ACCEPTANCE.md`,
   `docs/reports/RELEASE_CHECK.md`.
+
+## 2026-09-27 — P5 — Rate-limit policy, fresh retry budgets, login link
+* **Decision:** 429s use their own schedule (6 attempts, 15 s → 120 s) and a run-wide dispatch
+  cooldown; explicit operator requeues reset the retry budget (`jobs.retry_base`, migration 0002).
+  The operator token is remembered in localStorage and can be passed once via a URL fragment
+  (`#token=`), which is never sent to the server. Scoring, parser and packs are unchanged.
+* **Reason:** the first live run (free `google/gemma-4-31b-it:free`, 2026-09-27) hit per-minute
+  free-tier limits; the 2/4/8 s schedule exhausted retries within seconds, and a manual retry
+  inherited the exhausted budget.
+* **Affected:** operators, P5. **Evidence:** `test_rate_limits_back_off_the_whole_run`,
+  `test_explicit_retry_starts_a_fresh_retry_budget`, `frontend/src/api/client.test.ts`.
+
+## 2026-09-27 — Open question for the owner — strict answer format vs. reasoning in the answer
+* **Observation:** in the first live run, all three answers from `google/gemma-4-31b-it:free`
+  reasoned in prose and ended with a fenced JSON answer; under `st-parser-1.0.0` (spec §7: reject
+  prose-wrapped answers) they score `malformed_json`.
+* **Status:** unchanged. Changing this would be a scoring change requiring a new parser version
+  and a decision; options are keeping the strict track, or adding a separate, clearly labelled
+  lenient track that accepts a final fenced JSON block. **Owner decision needed.**

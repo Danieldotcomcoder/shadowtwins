@@ -336,3 +336,60 @@ def test_worker_shutdown_leaves_sent_attempts_for_recovery(ctx):
     assert q(ctx, "SELECT state FROM attempts WHERE job_id=?", (job_id,))[0]["state"] == "sent"
     drain(ctx)  # the stopped worker's lease is recovered immediately
     assert q(ctx, "SELECT state FROM jobs WHERE job_id=?", (job_id,))[0]["state"] == "uncertain"
+
+
+def test_rate_limits_back_off_the_whole_run(tmp_path):
+    import datetime as dt
+
+    from benchserver.config import RetryPolicy
+
+    from .conftest import make_ctx, make_settings
+
+    ctx = make_ctx(make_settings(tmp_path, retry=RetryPolicy(
+        max_attempts=4, base_delay_s=0.01, max_delay_s=0.05, rate_limit_base_delay_s=0.4, rate_limit_max_delay_s=0.8)))
+    run_id = create_run(ctx, "mock/ratelimit", concurrency=4)
+    drain(ctx, idle_s=1.0)
+    s = summary(ctx, run_id)
+    assert s["state"] == "completed"
+    evs = q(ctx, "SELECT type, created_at, payload_json FROM events WHERE run_id=? ORDER BY event_id", (run_id,))
+    cooldowns = [e for e in evs if e["type"] == "run_cooldown"]
+    assert cooldowns, "a 429 must pause the run"
+    starts = [dt.datetime.fromisoformat(e["created_at"]) for e in evs if e["type"] == "job_started"]
+    for c in cooldowns:
+        t0 = dt.datetime.fromisoformat(c["created_at"])
+        window = json.loads(c["payload_json"])["seconds"] - 0.05
+        assert not [t for t in starts if t0 < t < t0 + dt.timedelta(seconds=window)], "dispatched during cooldown"
+    # rate limits use their own (longer) schedule and attempt budget
+    delays = [json.loads(e["payload_json"])["delay_s"] for e in evs if e["type"] == "job_retry_scheduled"]
+    assert min(delays) >= 0.4
+
+
+def test_explicit_retry_starts_a_fresh_retry_budget(tmp_path):
+    from benchserver.config import RetryPolicy
+    from benchserver.providers.base import ErrorCategory
+    from benchserver.providers.mock import MockProvider
+
+    from .conftest import make_ctx, make_settings
+
+    class AlwaysLimited(MockProvider):
+        async def complete(self, req):
+            return self._err(ErrorCategory.RATE_LIMITED, 429, "mock: always rate limited")
+
+    ctx = make_ctx(make_settings(tmp_path, retry=RetryPolicy(
+        max_attempts=4, base_delay_s=0.01, max_delay_s=0.05, rate_limit_max_attempts=2,
+        rate_limit_base_delay_s=0.01, rate_limit_max_delay_s=0.02)))
+    ctx.providers["mock"] = AlwaysLimited(ctx.answer_book)
+    run_id = create_run(ctx, "mock/optimal", concurrency=9)
+    drain(ctx)
+    jobs = q(ctx, "SELECT state, attempts FROM jobs WHERE run_id=?", (run_id,))
+    assert all(j["state"] == "failed" and j["attempts"] == 2 for j in jobs)
+    conn = ctx.connect()
+    try:
+        runs.control(conn, run_id, "retry_failed")
+    finally:
+        conn.close()
+    drain(ctx)
+    jobs = q(ctx, "SELECT state, attempts, retry_base FROM jobs WHERE run_id=?", (run_id,))
+    # a full second cycle of 2 attempts; numbering keeps counting for the audit trail
+    assert all(j["state"] == "failed" and j["attempts"] == 4 and j["retry_base"] == 2 for j in jobs)
+    assert len(q(ctx, "SELECT * FROM attempts WHERE run_id=?", (run_id,))) == 36

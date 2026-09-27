@@ -10,6 +10,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { adoptTokenFromUrl } from "./api/client";
 import { Shell } from "./components/layout/Shell";
 import { Loading } from "./components/ui/ui";
 import { EvaluatePage } from "./pages/EvaluatePage";
@@ -17,6 +18,9 @@ import { AboutPage, NotFoundPage } from "./pages/InfoPages";
 import { PracticeListPage } from "./pages/PracticeListPage";
 import { LeaderboardPage, ModelPage } from "./pages/ResultsPages";
 import { RunPage, RunsPage } from "./pages/RunPages";
+
+// A login link (http://host/#token=...) signs this browser in before anything is fetched.
+adoptTokenFromUrl();
 
 const queryClient = new QueryClient({
   defaultOptions: { queries: { retry: 1, refetchOnWindowFocus: false } },

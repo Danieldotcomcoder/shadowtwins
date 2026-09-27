@@ -22,7 +22,8 @@ def make_settings(tmp_path: Path, **kw: Any):
         data_dir=tmp_path, db_path=tmp_path / "test.db", packs_dir=ROOT / "packs",
         frontend_dist=tmp_path / "no-dist", enable_mock_provider=True, auth_mode="open",
         operator_token=None, openrouter_api_key=None, poll_s=0.02, heartbeat_s=0.2, lease_ttl_s=5.0,
-        worker_stale_after_s=5.0, retry=RetryPolicy(max_attempts=4, base_delay_s=0.01, max_delay_s=0.05),
+        worker_stale_after_s=5.0, retry=RetryPolicy(max_attempts=4, base_delay_s=0.01, max_delay_s=0.05, rate_limit_base_delay_s=0.02,
+                          rate_limit_max_delay_s=0.1),
     )
     base.update(kw)
     return load_settings(**base)

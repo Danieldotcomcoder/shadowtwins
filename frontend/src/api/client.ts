@@ -1,6 +1,8 @@
-/* Thin typed client for the benchserver API. The browser never holds provider credentials; the
-   optional operator token lives in sessionStorage (cleared when the tab closes) and is only sent
-   as a Bearer header on this origin. */
+/* Thin typed client for the benchserver API. The browser never holds provider credentials. The
+   optional operator token (a run-control password, not the OpenRouter key) is remembered in this
+   browser's localStorage until "Forget token", and is only sent as a Bearer header on this origin.
+   A login link may carry it in the URL fragment (`#token=...`), which browsers never send to the
+   server; it is adopted once and removed from the address bar. */
 
 import type {
   Catalog,
@@ -20,22 +22,45 @@ import type {
 } from "./types";
 
 const TOKEN_KEY = "st-operator-token";
+let memoryToken: string | null = null;
 
 export function getOperatorToken(): string | null {
   try {
-    return sessionStorage.getItem(TOKEN_KEY);
+    return localStorage.getItem(TOKEN_KEY) ?? memoryToken;
+  } catch {
+    return memoryToken;
+  }
+}
+
+export function setOperatorToken(token: string | null): void {
+  memoryToken = token;
+  try {
+    if (token) localStorage.setItem(TOKEN_KEY, token);
+    else localStorage.removeItem(TOKEN_KEY);
+  } catch {
+    /* storage unavailable: token only lives for this page */
+  }
+}
+
+/** Extract `token=...` from a URL fragment such as `#token=abc` or `#x=1&token=abc`. */
+export function tokenFromHash(hash: string): string | null {
+  const m = hash.replace(/^#/, "").split("&").map((p) => p.split("=")).find(([k]) => k === "token");
+  if (!m || !m[1]) return null;
+  try {
+    return decodeURIComponent(m[1]);
   } catch {
     return null;
   }
 }
 
-export function setOperatorToken(token: string | null): void {
-  try {
-    if (token) sessionStorage.setItem(TOKEN_KEY, token);
-    else sessionStorage.removeItem(TOKEN_KEY);
-  } catch {
-    /* storage unavailable: token only lives for this page */
-  }
+/** Adopt a login-link token once and strip it from the address bar (and browser history). */
+export function adoptTokenFromUrl(): boolean {
+  if (typeof window === "undefined") return false;
+  const token = tokenFromHash(window.location.hash);
+  if (!token) return false;
+  setOperatorToken(token);
+  window.history.replaceState(null, "", window.location.pathname + window.location.search);
+  return true;
 }
 
 export class ApiError extends Error {

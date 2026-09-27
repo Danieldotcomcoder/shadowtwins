@@ -24,6 +24,14 @@ auth leaves the UI read-only. Set `ST_OPERATOR_TOKEN`, publish the port on `127.
 TLS reverse proxy in front for any remote access. Public viewers can be allowed with
 `ST_AUTH_MODE=token`: reads are public and controls need the token.
 
+## Signing in
+
+`ST_OPERATOR_TOKEN` is a password you choose (any long random string) that unlocks starting and
+controlling runs; it is unrelated to the OpenRouter key. Open the one-click login link
+`http://127.0.0.1:8000/#token=<ST_OPERATOR_TOKEN>` once: the browser remembers it (until
+**Forget token** in the Operator dialog) and removes it from the address bar. The part after `#` is
+never sent to the server or written to logs. Without the token the UI is a read-only viewer.
+
 ## Health
 
 * `GET /api/health`: liveness (process up).
@@ -59,9 +67,15 @@ through the same API; stop the container first. Both are exercised by
   requests settle. Cancelling cancels unsent jobs and records how in-flight ones ended.
 * Before dispatch, each call reserves its worst-case cost. Dispatch stops (`budget_stopped`) when
   the next reservation would exceed the run limit. Raise the limit and resume from the run page.
-* Transport, 5xx and 429 errors are retried with a fixed policy (4 attempts, exponential backoff,
-  honouring `Retry-After`). `401`/`402` pause the run. A completed answer, however poor, is never
+* Transport and 5xx errors are retried with a fixed policy (4 attempts, 2 s → 60 s backoff).
+  Rate limits (429) get their own schedule (6 attempts: 15, 30, 60, 120, 120 s, honouring
+  `Retry-After`) and pause the whole run's dispatch for the same time, so one 429 does not trigger
+  a burst of further 429s. **Retry failed** / **Rerun uncertain** start a fresh retry budget (attempt
+  numbers keep counting). `401`/`402` pause the run. A completed answer, however poor, is never
   retried.
+* Free OpenRouter models (`...:free`) are heavily rate-limited (per minute and per day, and often
+  upstream at the provider); runs on them can take several minutes and may end *incomplete*. Add
+  OpenRouter credits for paid models.
 * *Uncertain* jobs (sent, outcome unknown) keep the run incomplete until you choose **Rerun
   uncertain**, which may cost a second call and is logged.
 

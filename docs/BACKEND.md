@@ -35,8 +35,10 @@ charged again; logged), `retry_failed`, `set_spend_limit`.
 * Every attempt is recorded (`prepared → sent → response | failed | ambiguous | abandoned`).
   Recovery: never-sent → requeued; stored response → evaluated without a new request;
   sent-without-response → `uncertain` (rerun only by explicit operator action).
-* Retries (4 attempts, exponential backoff 2 s…60 s, honouring `Retry-After`) apply only to
-  transport errors before sending, 5xx/408/provider-finish errors and 429. A completed answer —
+* Retries apply only to transport errors before sending, 5xx/408/provider-finish errors (4 attempts,
+  2 s…60 s) and 429 rate limits (6 attempts, 15 s…120 s, honouring `Retry-After`, with a run-wide
+  dispatch cooldown). Explicit operator requeues reset the retry budget (`jobs.retry_base`,
+  migration 0002). A completed answer —
   valid, invalid, refused or truncated — is never retried. `401`/`402` pause the run; other 4xx
   fail the job.
 * Exactly-once execution across OpenRouter is **not** claimed.

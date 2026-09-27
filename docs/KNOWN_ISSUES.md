@@ -1,5 +1,13 @@
 # Known issues and limitations
 
+## Observed in the first live run (2026-09-27)
+
+* A free model (`google/gemma-4-31b-it:free`) wrote its reasoning as prose and ended with a fenced
+  JSON answer; the strict parser scores that `malformed_json` (see the open question in
+  `docs/DECISIONS.md`).
+* Free models are throttled (per minute, per day, and upstream at the provider): 3 of 9 requests
+  completed after retries. The account had no OpenRouter credits, so paid models cannot run yet.
+
 ## Open release gates
 
 * **Live pilot not run.** No OpenRouter key was available; see `docs/research/PILOT_REPORT.md`.

@@ -20,8 +20,10 @@ docker run -d --name shadowtwins -p 127.0.0.1:8000:8000 -v shadowtwins-data:/dat
   --env-file .env --stop-timeout 40 shadowtwins:0.1.0
 ```
 
-Build the image first with `docker build -t shadowtwins:0.1.0 .`. Then open
-<http://127.0.0.1:8000>, click **Viewer** in the header and paste the operator token. The API key
+Build the image first with `docker build -t shadowtwins:0.1.0 .`. `ST_OPERATOR_TOKEN` is simply a
+password you make up (for example `python -c "import secrets;print(secrets.token_urlsafe(24))"`); it
+unlocks starting runs. Sign in once with `http://127.0.0.1:8000/#token=<your token>` (or click
+**Viewer** in the header and paste it). The API key
 stays on the server. Data, logs and backups live in the `/data` volume. Operations (configuration,
 auth modes, backup/restore, upgrades): [docs/OPERATIONS.md](docs/OPERATIONS.md).
 

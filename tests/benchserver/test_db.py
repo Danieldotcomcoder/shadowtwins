@@ -10,9 +10,9 @@ from .conftest import create_run, drain, make_ctx, make_settings, q
 
 def test_migrations_are_idempotent(tmp_path):
     conn = db.connect(tmp_path / "m.db")
-    assert db.migrate(conn) == ["0001_initial.sql"]
+    assert db.migrate(conn) == ["0001_initial.sql", "0002_retry_base.sql"]
     assert db.migrate(conn) == []
-    assert db.schema_version(conn) == db.latest_migration() == 1
+    assert db.schema_version(conn) == db.latest_migration() == 2
     assert conn.execute("PRAGMA journal_mode").fetchone()[0] == "wal"
     assert conn.execute("PRAGMA foreign_keys").fetchone()[0] == 1
     conn.close()
