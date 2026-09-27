@@ -95,7 +95,7 @@ export function useRunAction(runId: string) {
 
 const EVENT_TYPES = [
   "snapshot", "run_created", "run_state", "job_started", "job_completed", "job_retry_scheduled",
-  "job_failed", "job_uncertain", "job_recovered", "jobs_requeued", "spend_limit", "end",
+  "job_failed", "job_uncertain", "job_recovered", "jobs_requeued", "spend_limit", "run_cooldown", "end",
 ];
 
 /** Live run updates over SSE. The server persists every event, so the stream resumes after

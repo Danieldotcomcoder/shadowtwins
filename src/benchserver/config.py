@@ -37,11 +37,22 @@ class RetryPolicy:
     max_attempts: int = 4
     base_delay_s: float = 2.0
     max_delay_s: float = 60.0
+    # Rate limits (429) are usually per-minute windows, so they get a slower, longer schedule
+    # (15 s, 30 s, 60 s, 120 s, 120 s) and pause the whole run's dispatch for the same time.
+    rate_limit_max_attempts: int = 6
+    rate_limit_base_delay_s: float = 15.0
+    rate_limit_max_delay_s: float = 120.0
 
     def delay(self, attempt_number: int, retry_after_s: float | None = None) -> float:
         d = min(self.max_delay_s, self.base_delay_s * (2 ** max(0, attempt_number - 1)))
         if retry_after_s is not None:
             d = max(d, min(retry_after_s, self.max_delay_s * 5))
+        return d
+
+    def rate_limit_delay(self, attempt_number: int, retry_after_s: float | None = None) -> float:
+        d = min(self.rate_limit_max_delay_s, self.rate_limit_base_delay_s * (2 ** max(0, attempt_number - 1)))
+        if retry_after_s is not None:
+            d = max(d, min(retry_after_s, self.rate_limit_max_delay_s * 5))
         return d
 
 

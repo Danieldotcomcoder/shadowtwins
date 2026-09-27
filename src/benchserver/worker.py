@@ -53,6 +53,7 @@ class Worker:
         self.stopping = False
         self._last_hb = 0.0
         self._last_recover = 0.0
+        self.run_cooldown: dict[str, float] = {}  # run_id -> monotonic time dispatch may resume
 
     # --- lifecycle -----------------------------------------------------------------------------
     def register(self) -> None:
@@ -129,6 +130,8 @@ class Worker:
 
     # --- claiming ------------------------------------------------------------------------------
     def claim(self, run_id: str) -> dict[str, Any] | None:
+        if time.monotonic() < self.run_cooldown.get(run_id, 0.0):
+            return None  # the run is backing off after a rate limit
         with tx(self.conn):
             run = self.conn.execute("SELECT * FROM runs WHERE run_id=?", (run_id,)).fetchone()
             if run is None or run["state"] != RunState.ACTIVE.value:
@@ -246,6 +249,7 @@ class Worker:
             if not owned:
                 return
             self._release(job_id, run_id, charge)
+            used = job["attempts"] - (job.get("retry_base") or 0)  # attempts in this retry cycle
             err = f"{cat.value}: {r.error_message or ''}"[:300]
             info = {"job_id": job_id, "instance_id": job["instance_id"], "category": cat.value,
                     "http_status": r.http_status, "attempt": job["attempts"]}
@@ -256,7 +260,17 @@ class Worker:
             elif cat in RUN_BLOCKING:
                 self._set_job(job_id, JobState.QUEUED, err)
                 runs.set_state(self.conn, run_id, RunState.PAUSED, f"provider error blocks dispatch: {err}")
-            elif r.retryable and job["attempts"] < self.s.retry.max_attempts:
+            elif cat == ErrorCategory.RATE_LIMITED and used < self.s.retry.rate_limit_max_attempts:
+                delay = self.s.retry.rate_limit_delay(job["attempts"], r.retry_after_s)
+                self._set_job(job_id, JobState.RETRY_WAIT, err, not_before=after(delay))
+                # Back off the whole run: every other request would hit the same window.
+                until = time.monotonic() + delay
+                if until > self.run_cooldown.get(run_id, 0.0):
+                    self.run_cooldown[run_id] = until
+                    events.emit(self.conn, run_id, "run_cooldown", {"seconds": round(delay, 3),
+                                                                     "reason": "provider rate limit"})
+                events.emit(self.conn, run_id, "job_retry_scheduled", info | {"delay_s": round(delay, 3)})
+            elif r.retryable and cat != ErrorCategory.RATE_LIMITED and used < self.s.retry.max_attempts:
                 delay = self.s.retry.delay(job["attempts"], r.retry_after_s)
                 self._set_job(job_id, JobState.RETRY_WAIT, err, not_before=after(delay))
                 events.emit(self.conn, run_id, "job_retry_scheduled", info | {"delay_s": round(delay, 3)})

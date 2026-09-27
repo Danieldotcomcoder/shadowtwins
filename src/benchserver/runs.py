@@ -217,8 +217,8 @@ def control(conn: sqlite3.Connection, run_id: str, action: str, value: float | N
             ids = [r[0] for r in conn.execute("SELECT job_id FROM jobs WHERE run_id=? AND state=?", (run_id, src))]
             if not ids:
                 raise RunError(409, f"no {src} jobs to requeue")
-            conn.execute(f"UPDATE jobs SET state='queued', not_before=NULL, updated_at=? WHERE run_id=? AND state='{src}'",
-                         (now(), run_id))
+            conn.execute(f"UPDATE jobs SET state='queued', not_before=NULL, retry_base=attempts, updated_at=? "
+                         f"WHERE run_id=? AND state='{src}'", (now(), run_id))
             events.emit(conn, run_id, "jobs_requeued", {
                 "from": src, "job_ids": ids,
                 "note": "explicit rerun: a previous request may already have been charged" if src == "uncertain" else

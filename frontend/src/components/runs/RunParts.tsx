@@ -185,6 +185,7 @@ const EVENT_TEXT: Record<string, (p: Record<string, unknown>) => string> = {
   jobs_requeued: (p) => `${(p.job_ids as unknown[]).length} ${p.from} jobs requeued — ${p.note}`,
   run_state: (p) => `run ${STATE_LABEL[p.state as string] ?? p.state}${p.reason ? `: ${p.reason}` : ""}`,
   spend_limit: (p) => `spending limit set to ${fmtUsd(p.spend_limit_usd as number)}`,
+  run_cooldown: (p) => `provider rate limit: pausing new requests for ${Math.round(p.seconds as number)} s`,
   run_created: (p) => `run created with ${p.jobs} jobs`,
 };
 
