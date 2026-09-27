@@ -18,6 +18,9 @@ from .providers.base import CompletionResult
 PROMPT_INFLATION = 1.25
 PROMPT_OVERHEAD_TOKENS = 64
 TYPICAL_OUTPUT_TOKENS = 1500
+# Thinking models spend most of their output reasoning; a free Nemotron 3 Ultra used over 8,192 tokens
+# on the easiest tier. A rough planning figure only: the worst case (full budget) is what is enforced.
+TYPICAL_REASONING_OUTPUT_TOKENS = 16000
 
 
 def prompt_estimate(tokens_max: int | None) -> int:
@@ -38,14 +41,16 @@ def reservation(pricing: dict[str, float | None], tokens_max: int | None, max_to
     return prompt_estimate(tokens_max) * pp + max_tokens * op + (pricing.get("request") or 0.0)
 
 
-def estimate(pricing: dict[str, float | None], prompt_tokens: list[int | None], max_tokens: int) -> dict[str, Any]:
+def estimate(pricing: dict[str, float | None], prompt_tokens: list[int | None], max_tokens: int,
+             reasons: bool = False) -> dict[str, Any]:
     calls = len(prompt_tokens)
     per = [reservation(pricing, t, max_tokens) for t in prompt_tokens]
     known = all(r is not None for r in per)
+    typical_out = min(max_tokens, TYPICAL_REASONING_OUTPUT_TOKENS if reasons else TYPICAL_OUTPUT_TOKENS)
     typical = None
     if known:
         pp, op = pricing["prompt"] or 0.0, _out_price(pricing) or 0.0
-        typical = sum(prompt_estimate(t) * pp + min(max_tokens, TYPICAL_OUTPUT_TOKENS) * op
+        typical = sum(prompt_estimate(t) * pp + typical_out * op
                       + (pricing.get("request") or 0.0) for t in prompt_tokens)
     return {
         "calls": calls,
@@ -56,7 +61,7 @@ def estimate(pricing: dict[str, float | None], prompt_tokens: list[int | None], 
         "assumptions": {
             "prompt_tokens": f"panel max x {PROMPT_INFLATION} + {PROMPT_OVERHEAD_TOKENS}",
             "worst_case_output_tokens": max_tokens,
-            "typical_output_tokens": min(max_tokens, TYPICAL_OUTPUT_TOKENS),
+            "typical_output_tokens": typical_out,
         },
     }
 

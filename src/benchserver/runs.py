@@ -27,7 +27,7 @@ from benchcore.hashing import content_hash
 from . import catalog, costs, events
 from .context import AppContext
 from .db import jdump, jload, now, tx
-from .profiles import PROFILE_BY_ID, compatibility, request_params
+from .profiles import PROFILE_BY_ID, compatibility, output_budget, request_params
 
 MODES: dict[RunMode, dict[str, Any]] = {
     RunMode.QUICK_CHECK: {"split": "practice", "repetitions": 1, "track": "quick_check"},
@@ -87,9 +87,12 @@ async def plan(ctx: AppContext, conn: sqlite3.Connection, spec: RunSpec, pack_id
                            {"available": [e.slug for e in eps], "error": endpoint_error})
     pricing = endpoint.pricing if endpoint else model.pricing
     prompt_max = max((r["tokens_max"] or 800) for r in items)
-    compat = compatibility(model, profile, costs.prompt_estimate(prompt_max), endpoint)
+    prompt_est = costs.prompt_estimate(prompt_max)
+    compat = compatibility(model, profile, prompt_est, endpoint)
+    budget, _ = output_budget(model, profile, prompt_est, endpoint)
     tokens = [r["tokens_max"] for r in items] * mode["repetitions"]
-    est = costs.estimate(pricing, tokens, profile.max_tokens)
+    est = costs.estimate(pricing, tokens, budget,
+                         reasons=model.reasoning is not None or profile.reasoning is not None)
 
     blocking: list[str] = []
     if not compat["compatible"]:
@@ -114,7 +117,7 @@ async def plan(ctx: AppContext, conn: sqlite3.Connection, spec: RunSpec, pack_id
     return {
         "model": model.to_dict(), "snapshot_id": snapshot_id, "provider": provider,
         "endpoint": endpoint.to_dict() if endpoint else None, "endpoint_error": endpoint_error,
-        "profile": profile.to_dict(), "compatibility": compat,
+        "profile": profile.to_dict(), "compatibility": compat, "prompt_tokens_estimate": prompt_est,
         "pack": {"pack_id": pack["pack_id"], "pack_hash": pack["pack_hash"], "split": pack["split"],
                  "ranked": bool(pack["ranked"]), "instances": len(items)},
         "mode": spec.mode.value, "track": mode["track"], "repetitions": mode["repetitions"],
@@ -131,7 +134,7 @@ async def create(ctx: AppContext, conn: sqlite3.Connection, spec: RunSpec, pack_
     model = catalog.model_from_dict(p["model"])
     endpoint = catalog.endpoint_from_dict(p["endpoint"]) if p["endpoint"] else None
     profile = PROFILE_BY_ID[spec.profile_id]
-    params, settings_record = request_params(model, profile, endpoint)
+    params, settings_record = request_params(model, profile, endpoint, p["prompt_tokens_estimate"])
     pack = conn.execute("SELECT * FROM packs WHERE pack_id=?", (p["pack"]["pack_id"],)).fetchone()
     module = ctx.module(pack["benchmark_id"])
     versions = {**module.metadata().versions, "suite": SUITE_VERSION, "contracts": CONTRACTS_VERSION,

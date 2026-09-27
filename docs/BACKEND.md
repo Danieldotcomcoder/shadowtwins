@@ -66,17 +66,22 @@ unranked override. Cost and latency never enter quality scores.
 * Ranked eligibility requires: ranked pack, non-mock model, pinned endpoint, known pricing, a
   compatible profile, a completed run, and no response whose reported provider contradicts the pin.
 
-## Profiles (`prof-*-1`)
+## Profiles (`prof-*-2`)
 
-| id | output budget | temperature | reasoning | requires |
+| id | output budget (ceiling) | temperature | reasoning | requires |
 |---|---|---|---|---|
-| standard | 8,192 | 0 if supported | model default (not controlled) | — |
-| reasoning-low | 16,384 | — | `effort: low` | `reasoning` |
-| reasoning-high | 32,768 | — | `effort: high` | `reasoning` |
+| standard | 65,536 | 0 if supported | model default (not controlled) | — |
+| reasoning-low | 65,536 | — | `effort: low` | `reasoning` |
+| reasoning-high | 131,072 | — | `effort: high` | `reasoning` |
 
-Profiles are incompatible when the context cannot hold prompt + output budget, when the endpoint's
-max completion tokens is smaller than the budget, or when a required parameter or effort is not
-supported. Equal effort labels are **not** equal reasoning budgets across models.
+The output budget includes reasoning tokens and is a ceiling meant not to bind: a model (or pinned
+endpoint) whose max completion tokens, or context minus the prompt, is lower gets its own maximum
+instead. The budget actually sent is stored in the run's request template
+(`params.max_tokens`; `settings.profile_max_tokens`, `settings.max_tokens_capped_by`) and used for reservations.
+Profiles are incompatible only when that budget would fall below 8,192 tokens, or when a required
+parameter or effort is not supported. Equal effort labels are **not** equal reasoning budgets
+across models. `prof-*-1` (8,192 / 16,384 / 32,768, no capping) truncated thinking models and
+remains only on runs created before 2026-09-27.
 
 ## Aggregation and leaderboard
 

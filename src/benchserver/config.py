@@ -68,7 +68,7 @@ class Settings:
     auth_mode: str = "local"  # token | local | open | readonly
     enable_mock_provider: bool = False
     catalog_ttl_s: float = 3600.0
-    http_timeout_s: float = 600.0
+    http_timeout_s: float = 3600.0  # a long thinking answer on a slow free endpoint can take ~40 min
     connect_timeout_s: float = 20.0
     lease_ttl_s: float = 90.0
     heartbeat_s: float = 5.0
@@ -99,7 +99,7 @@ def load_settings(**overrides: object) -> Settings:
         auth_mode=mode,
         enable_mock_provider=_bool("ST_ENABLE_MOCK_PROVIDER", False),
         catalog_ttl_s=_float("ST_CATALOG_TTL_S", 3600.0),
-        http_timeout_s=_float("ST_HTTP_TIMEOUT_S", 600.0),
+        http_timeout_s=_float("ST_HTTP_TIMEOUT_S", 3600.0),
         lease_ttl_s=_float("ST_LEASE_TTL_S", 90.0),
         worker_concurrency=_int("ST_WORKER_CONCURRENCY", 8),
     )

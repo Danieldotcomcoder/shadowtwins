@@ -146,8 +146,8 @@ class Worker:
                 (run_id, now())).fetchone()
             if job is None:
                 return None
-            profile = jload(run["profile_json"])
-            reserve = costs.reservation(jload(run["pricing_json"]), job["tokens_max"], profile["max_tokens"])
+            budget = jload(run["request_template_json"])["params"]["max_tokens"]  # after model-limit capping
+            reserve = costs.reservation(jload(run["pricing_json"]), job["tokens_max"], budget)
             if reserve is None:
                 if not run["allow_unknown_pricing"]:
                     runs.set_state(self.conn, run_id, RunState.BUDGET_STOPPED,
