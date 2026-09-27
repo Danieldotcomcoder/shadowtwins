@@ -27,7 +27,7 @@ def test_quick_check_optimal_records_full_provenance(ctx):
     for a in attempts:
         req = json.loads(a["request_json"])
         assert req["model"] == "mock/optimal" and req["messages"][0]["role"] == "user"
-        assert req["max_tokens"] == 8192 and "tools" not in req and "response_format" not in req
+        assert req["max_tokens"] == 65536 and "tools" not in req and "response_format" not in req
         assert a["state"] == "response" and a["cost_source"] == "reported" and a["prompt_hash"].startswith("sha256:")
     evs = q(ctx, "SELECT e.certificate_hash, c.core_hash FROM evaluations e JOIN certificates c USING(instance_id) "
                  "WHERE e.run_id=?", (run_id,))
@@ -208,9 +208,10 @@ def test_spending_limit_stops_dispatch_and_can_be_raised(ctx):
         plan = asyncio.run(runs.plan(ctx, conn, spec))
         per_call = plan["estimate"]["max_per_call_usd"]
         assert plan["estimate"]["worst_case_usd"] == pytest.approx(
-            sum(costs.reservation(plan["pricing"], r["tokens_max"], 8192)
+            sum(costs.reservation(plan["pricing"], r["tokens_max"], 65536)
                 for r in q(ctx, "SELECT tokens_max FROM instances WHERE pack_id='shadowtwins-practice-v1'")))
-        run_id = create_run(ctx, "mock/optimal", limit=per_call * 1.02, concurrency=1)
+        # headroom (0.1% of a full-budget reservation) is far below one mock call's actual cost
+        run_id = create_run(ctx, "mock/optimal", limit=per_call * 1.001, concurrency=1)
         drain(ctx)
         s = summary(ctx, run_id)
         assert s["state"] == "budget_stopped" and s["scores"]["completed"] == 1
@@ -315,6 +316,17 @@ def test_leaderboard_lists_latest_eligible_run_not_the_best(ctx):
         # observed provider contradicting the pin disqualifies the run
         _promote_to_real(ctx, later_and_worse, provider_name="SomeoneElse")
         assert leaderboard(conn)["rows"][0]["run_id"] == best
+        assert leaderboard(conn)["rows"][0]["versions"]["profile"] == "prof-standard-2"
+        # a run under an older profile version (different output budget) is listed separately
+        with tx(conn):
+            old = json.loads(conn.execute("SELECT profile_json FROM runs WHERE run_id=?", (best,)).fetchone()[0])
+            conn.execute("UPDATE runs SET profile_json=? WHERE run_id=?",
+                         (json.dumps(old | {"version": "prof-standard-1"}), best))
+        _promote_to_real(ctx, later_and_worse)
+        rows = leaderboard(conn)["rows"]
+        assert {(r["run_id"], r["versions"]["profile"]) for r in rows} == {
+            (best, "prof-standard-1"), (later_and_worse, "prof-standard-2")}
+        assert len(model_detail(conn, "mock/optimal")["latest_eligible"]) == 2
     finally:
         conn.close()
 

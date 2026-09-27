@@ -211,7 +211,7 @@ export function EvaluatePage() {
               <>
                 <div className="stats">
                   <Stat k="Calls" v={est.calls} />
-                  <Stat k="Typical cost" v={fmtUsd(est.typical_usd)} hint="~1.5k output tokens per call" />
+                  <Stat k="Typical cost" v={fmtUsd(est.typical_usd)} hint={`~${fmtTokens(Number(est.assumptions.typical_output_tokens))} output tokens per call`} />
                   <Stat k="Worst case" v={fmtUsd(est.worst_case_usd)} hint="every call uses its full budget" />
                   <Stat k="Per-call reserve" v={fmtUsd(est.max_per_call_usd)} />
                 </div>

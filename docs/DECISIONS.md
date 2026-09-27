@@ -87,3 +87,18 @@ Append-only. Each entry: date, owner, decision, reason, affected prompts, eviden
 * **Status:** unchanged. Changing this would be a scoring change requiring a new parser version
   and a decision; options are keeping the strict track, or adding a separate, clearly labelled
   lenient track that accepts a final fenced JSON block. **Owner decision needed.**
+
+## 2026-09-27 — P5 calibration — Output budgets for thinking models (`prof-*-2`)
+* **Decision:** profile output budgets become ceilings that should not bind: standard 65,536,
+  reasoning-low 65,536, reasoning-high 131,072 (reasoning included), each capped at the model's own
+  max completion tokens / context, with a floor of 8,192 below which the profile is incompatible.
+  Profiles are versioned `prof-*-2`; the budget actually sent is recorded per run. The typical cost
+  estimate assumes 16,000 output tokens per call for reasoning-capable models (1,500 otherwise), and
+  the HTTP read timeout default rises to 3,600 s. Parser, scoring and packs unchanged.
+* **Reason:** the first run on a thinking model (`nvidia/nemotron-3-ultra-550b-a55b:free`, default
+  effort high) hit the 8,192 cap while still reasoning on every item (4,880–5,621 reasoning tokens,
+  `finish_reason=length`, no answer written), so v1 measured the cap, not the model. The spec
+  leaves profile values to calibration (§ step 6), which the live pilot was meant to perform.
+* **Affected:** all new runs; results of `prof-*-1` runs are not comparable with `prof-*-2` and are
+  separated by profile version. **Evidence:** attempts 50–51 of `run_20260927_160658_a517a3`;
+  `test_profile_compatibility_uses_real_limits`.

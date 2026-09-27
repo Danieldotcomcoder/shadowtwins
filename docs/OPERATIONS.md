@@ -16,7 +16,7 @@ both gracefully on SIGTERM.
 | `ST_WORKER_CONCURRENCY` | `8` | Global in-flight request limit (each run also has its own limit) |
 | `ST_ENABLE_MOCK_PROVIDER` | `0` | Adds `mock/*` test doubles (never ranked) |
 | `ST_CATALOG_TTL_S` | `3600` | OpenRouter catalog cache lifetime |
-| `ST_HTTP_TIMEOUT_S` | `600` | Per-request read timeout (reasoning models can be slow) |
+| `ST_HTTP_TIMEOUT_S` | `3600` | Per-request read timeout (a long thinking answer on a slow free endpoint can take ~40 min) |
 | `ST_LEASE_TTL_S` | `90` | Job lease; heartbeats extend it every 5 s |
 
 Inside Docker, browser requests do not come from the container's loopback interface, so `local`

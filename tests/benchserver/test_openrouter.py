@@ -6,7 +6,7 @@ from pathlib import Path
 import httpx
 import pytest
 
-from benchserver.profiles import PROFILE_BY_ID, compatibility, request_params
+from benchserver.profiles import PROFILE_BY_ID, compatibility, output_budget, request_params
 from benchserver.providers.base import CompletionRequest, ErrorCategory
 from benchserver.providers.openrouter import OpenRouterProvider, parse_endpoint, parse_model
 
@@ -65,17 +65,27 @@ def test_profile_compatibility_uses_real_limits():
     hi = compatibility(mini, PROFILE_BY_ID["reasoning-high"], 1000)
     assert not hi["compatible"] and any("reasoning" in p for p in hi["problems"])
     r1 = models["deepseek/deepseek-r1"]
+    # A model whose own output limit is below the profile ceiling gets its own maximum, not a refusal.
     low = compatibility(r1, PROFILE_BY_ID["reasoning-low"], 1000)
-    assert not low["compatible"]  # 16,000 max completion tokens < 16,384 output budget
+    assert low["compatible"] and any("16,000" in w and "max completion" in w for w in low["warnings"])
     std = compatibility(r1, PROFILE_BY_ID["standard"], 1000)
     assert std["compatible"] and any("always reasons" in w for w in std["warnings"])
-    params, record = request_params(models["meta-llama/llama-3.1-8b-instruct"], PROFILE_BY_ID["standard"], None)
-    assert params == {"max_tokens": 8192, "temperature": 0.0} and record["temperature"]["sent"]
+    params, record = request_params(r1, PROFILE_BY_ID["standard"], None, 1000)
+    assert params == {"max_tokens": 16000, "temperature": 0.0} and record["temperature"]["sent"]
+    assert record["profile_max_tokens"] == 65536 and "16,000" in record["max_tokens_capped_by"]
     import dataclasses
 
     no_temp = dataclasses.replace(r1, supported_parameters=[p for p in r1.supported_parameters if p != "temperature"])
-    params, record = request_params(no_temp, PROFILE_BY_ID["standard"], None)
+    params, record = request_params(no_temp, PROFILE_BY_ID["standard"], None, 1000)
     assert "temperature" not in params and record["temperature"]["sent"] is False
+    # A limit (output or context) below the minimum useful budget is still a hard incompatibility.
+    tiny = dataclasses.replace(r1, max_completion_tokens=4096)
+    bad = compatibility(tiny, PROFILE_BY_ID["standard"], 1000)
+    assert not bad["compatible"] and any("below the minimum" in p for p in bad["problems"])
+    small_ctx = dataclasses.replace(r1, context_length=40_000, max_completion_tokens=None)
+    assert output_budget(small_ctx, PROFILE_BY_ID["standard"], 1000) == (39_000, "the context window (40,000 minus the prompt)")
+    big = dataclasses.replace(r1, context_length=1_000_000, max_completion_tokens=None)
+    assert output_budget(big, PROFILE_BY_ID["reasoning-high"], 1000) == (131_072, None)
 
 
 def test_list_models_filters_to_text_and_uses_public_endpoint():

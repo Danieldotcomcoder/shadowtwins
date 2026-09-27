@@ -7,6 +7,11 @@
   `docs/DECISIONS.md`).
 * Free models are throttled (per minute, per day, and upstream at the provider): 3 of 9 requests
   completed after retries. The account had no OpenRouter credits, so paid models cannot run yet.
+* A thinking model (`nvidia/nemotron-3-ultra-550b-a55b:free`) was truncated on every item under the
+  8,192-token `prof-standard-1` budget while still reasoning. Fixed by `prof-*-2` (see
+  `docs/DECISIONS.md`). Free endpoints are also slow (~27 output tokens/s, so one long thinking
+  answer can take 20–40 minutes) and occasionally end a response with a provider error, which is
+  retried.
 
 ## Open release gates
 

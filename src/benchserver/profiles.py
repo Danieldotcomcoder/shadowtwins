@@ -31,31 +31,53 @@ class RunProfile:
         return d
 
 
+# Output budgets are ceilings that should rarely bind: thinking models spend most of their output
+# reasoning, and a budget that cuts them off measures the budget, not the model (v1 profiles gave
+# 8,192 tokens and truncated a free Nemotron 3 Ultra on every item). A model whose own output or
+# context limit is lower gets its own maximum instead (recorded per run), down to MIN_OUTPUT_TOKENS.
+MIN_OUTPUT_TOKENS = 8192
+
 PROFILES: tuple[RunProfile, ...] = (
     RunProfile(
-        id="standard", version="prof-standard-1", label="Standard",
-        description="Prompt-requested JSON, 8,192 output tokens (reasoning included), temperature 0 "
-                    "where supported, reasoning left at the model default.",
-        max_tokens=8192, temperature=0.0, reasoning=None, requires=(),
+        id="standard", version="prof-standard-2", label="Standard",
+        description="Prompt-requested JSON, up to 65,536 output tokens (reasoning included; capped at "
+                    "the model's own limit), temperature 0 where supported, reasoning left at the "
+                    "model default.",
+        max_tokens=65536, temperature=0.0, reasoning=None, requires=(),
         enforcement="Reasoning is not controlled: each model uses its own default. Temperature is "
                     "sent only when the model lists it as supported.",
     ),
     RunProfile(
-        id="reasoning-low", version="prof-reasoning-low-1", label="Reasoning: low effort",
-        description="reasoning.effort = low, 16,384 output tokens (reasoning included).",
-        max_tokens=16384, temperature=None, reasoning={"effort": "low"}, requires=("reasoning",),
+        id="reasoning-low", version="prof-reasoning-low-2", label="Reasoning: low effort",
+        description="reasoning.effort = low, up to 65,536 output tokens (reasoning included; capped at "
+                    "the model's own limit).",
+        max_tokens=65536, temperature=None, reasoning={"effort": "low"}, requires=("reasoning",),
         enforcement="Effort is a request; OpenRouter maps it per model, so equal labels do not imply "
                     "equal reasoning budgets across models.",
     ),
     RunProfile(
-        id="reasoning-high", version="prof-reasoning-high-1", label="Reasoning: high effort",
-        description="reasoning.effort = high, 32,768 output tokens (reasoning included).",
-        max_tokens=32768, temperature=None, reasoning={"effort": "high"}, requires=("reasoning",),
+        id="reasoning-high", version="prof-reasoning-high-2", label="Reasoning: high effort",
+        description="reasoning.effort = high, up to 131,072 output tokens (reasoning included; capped "
+                    "at the model's own limit).",
+        max_tokens=131072, temperature=None, reasoning={"effort": "high"}, requires=("reasoning",),
         enforcement="Effort is a request; OpenRouter maps it per model, so equal labels do not imply "
                     "equal reasoning budgets across models.",
     ),
 )
 PROFILE_BY_ID = {p.id: p for p in PROFILES}
+
+
+def output_budget(model: ModelInfo, profile: RunProfile, prompt_tokens: int,
+                  endpoint: EndpointInfo | None = None) -> tuple[int, str | None]:
+    """(output tokens to request, what capped it below the profile ceiling, if anything)."""
+    budget, capped_by = profile.max_tokens, None
+    max_out = endpoint.max_completion_tokens if endpoint else model.max_completion_tokens
+    if max_out is not None and max_out < budget:
+        budget, capped_by = max_out, f"the model's max completion tokens ({max_out:,})"
+    ctx = endpoint.context_length if endpoint and endpoint.context_length else model.context_length
+    if ctx is not None and ctx - prompt_tokens < budget:
+        budget, capped_by = max(0, ctx - prompt_tokens), f"the context window ({ctx:,} minus the prompt)"
+    return budget, capped_by
 
 
 def compatibility(model: ModelInfo, profile: RunProfile, prompt_tokens: int,
@@ -70,11 +92,13 @@ def compatibility(model: ModelInfo, profile: RunProfile, prompt_tokens: int,
     ctx = endpoint.context_length if endpoint and endpoint.context_length else model.context_length
     if ctx is None:
         warnings.append("context length unknown")
-    elif ctx < prompt_tokens + profile.max_tokens:
-        problems.append(f"context {ctx} < prompt ~{prompt_tokens} + output budget {profile.max_tokens}")
-    max_out = endpoint.max_completion_tokens if endpoint else model.max_completion_tokens
-    if max_out is not None and max_out < profile.max_tokens:
-        problems.append(f"max completion tokens {max_out} < output budget {profile.max_tokens}")
+    budget, capped_by = output_budget(model, profile, prompt_tokens, endpoint)
+    if budget < MIN_OUTPUT_TOKENS:
+        problems.append(f"output budget {budget:,} (limited by {capped_by}) is below the minimum "
+                        f"{MIN_OUTPUT_TOKENS:,}")
+    elif capped_by:
+        warnings.append(f"output budget {budget:,} tokens (limited by {capped_by}; profile allows "
+                        f"{profile.max_tokens:,})")
     if profile.reasoning and model.reasoning:
         efforts = model.reasoning.get("supported_efforts")
         eff = profile.reasoning.get("effort")
@@ -87,12 +111,15 @@ def compatibility(model: ModelInfo, profile: RunProfile, prompt_tokens: int,
     return {"profile_id": profile.id, "compatible": not problems, "problems": problems, "warnings": warnings}
 
 
-def request_params(model: ModelInfo, profile: RunProfile, endpoint: EndpointInfo | None) -> tuple[dict[str, Any], dict[str, Any]]:
+def request_params(model: ModelInfo, profile: RunProfile, endpoint: EndpointInfo | None,
+                   prompt_tokens: int) -> tuple[dict[str, Any], dict[str, Any]]:
     """(params sent, record of requested vs applied settings)."""
-    params: dict[str, Any] = {"max_tokens": profile.max_tokens}
+    budget, capped_by = output_budget(model, profile, prompt_tokens, endpoint)
+    params: dict[str, Any] = {"max_tokens": budget}
     supported = set(endpoint.supported_parameters if endpoint else model.supported_parameters)
     record: dict[str, Any] = {"profile": profile.id, "profile_version": profile.version,
-                              "max_tokens": profile.max_tokens}
+                              "max_tokens": budget, "profile_max_tokens": profile.max_tokens,
+                              "max_tokens_capped_by": capped_by}
     if profile.temperature is not None:
         if "temperature" in supported:
             params["temperature"] = profile.temperature

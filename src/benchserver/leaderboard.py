@@ -1,6 +1,7 @@
 """Leaderboard listing policy and model detail.
 
-Policy (``lb-1.0.0``): for each (model, pinned endpoint, profile, track, pack hash, suite version)
+Policy (``lb-1.0.0``): for each (model, pinned endpoint, profile and its version, track, pack hash,
+suite version)
 list the **latest** completed run that is leaderboard-eligible — ranked, not mock, completed with
 every item evaluated, and with provider consistency not contradicted. Never the highest historical
 run. All run history stays accessible through model detail. With suite-1 (one benchmark), the
@@ -20,8 +21,14 @@ from .db import jload
 LISTING_POLICY = "lb-1.0.0"
 
 
+def _profile_version(profile_json: str | None) -> str:
+    return str((jload(profile_json) or {}).get("version", ""))
+
+
 def _group_key(r: sqlite3.Row) -> tuple[str, ...]:
-    return (r["model_id"], r["endpoint"] or "", r["profile_id"], r["track"], r["pack_hash"], r["suite_version"])
+    # The profile version is part of the key: runs under different output budgets are not comparable.
+    return (r["model_id"], r["endpoint"] or "", r["profile_id"], _profile_version(r["profile_json"]), r["track"],
+            r["pack_hash"], r["suite_version"])
 
 
 def leaderboard(conn: sqlite3.Connection, track: str = "standard", profile_id: str | None = None) -> dict[str, Any]:
@@ -53,7 +60,8 @@ def leaderboard(conn: sqlite3.Connection, track: str = "standard", profile_id: s
             "optimal_rate": sc["optimal_rate"], "completed": sc["completed"], "scheduled": sc["scheduled"],
             "cost_usd": s["cost"]["spent_usd"], "latency_ms": s["latency_ms"]["mean"],
             "evaluated_at": s["completed_at"], "suite_version": s["suite_version"],
-            "pack_id": s["pack_id"], "pack_hash": s["pack_hash"], "versions": s["versions"],
+            "pack_id": s["pack_id"], "pack_hash": s["pack_hash"],
+            "versions": {**s["versions"], "profile": str((s["profile"] or {}).get("version", ""))},
             "run_id": s["run_id"], "runs_in_group": history[key],
         })
     rows.sort(key=lambda x: (-(x["overall"] or 0.0), x["model_id"]))
@@ -75,10 +83,10 @@ def model_detail(conn: sqlite3.Connection, model_id: str) -> dict[str, Any]:
     all_runs = runs.list_runs(conn, model_id=model_id, limit=500)
     if not all_runs:
         return {"model_id": model_id, "runs": [], "latest_eligible": [], "categories": {}}
-    latest: dict[tuple[str, str, str], dict[str, Any]] = {}
+    latest: dict[tuple[str, str, str, str], dict[str, Any]] = {}
     cats: dict[str, int] = {}
     for s in all_runs:
-        k = (s["endpoint"] or "", s["profile_id"], s["track"])
+        k = (s["endpoint"] or "", s["profile_id"], str((s["profile"] or {}).get("version", "")), s["track"])
         if s["leaderboard_eligible"] and k not in latest:
             latest[k] = s
         for c, n in s["scores"]["categories"].items():
