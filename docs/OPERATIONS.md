@@ -37,8 +37,10 @@ The free plan is limited per model, per minute and per day (for GPT-OSS and Qwen
 minute and 200,000 per day at the time of writing; see console.groq.com/settings/limits). A single
 long thinking answer is allowed (a 33,562-token answer was accepted under the 8,000-token minute
 limit), but a thinking model uses 30–50k tokens per puzzle, so only a handful of puzzles per model
-fit into a day. When a limit is hit, Groq answers 429 with the wait time; the run pauses dispatch
-for exactly that long (up to a day) and continues by itself after the reset. Nothing is billed on
+fit into a day. When a limit is hit, Groq answers 429 (or, right after a long answer, 413 with a
+rate-limit code) with the wait time; the run pauses dispatch for exactly that long (up to a day) and
+continues by itself after the reset. Groq's daily check counts the full requested output budget, so a
+request can only start while about 66,000 tokens of the day's quota remain. Nothing is billed on
 the free plan; set `GROQ_PLAN=developer` after upgrading so spending limits use real prices.
 
 ## Signing in

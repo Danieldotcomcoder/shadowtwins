@@ -83,8 +83,10 @@ unranked override. Cost and latency never enter quality scores.
   in `<think>` tags and fail the strict parser. GPT-OSS returns reasoning separately by default.
 * No endpoints, no fallbacks: Groq runs are not marked "not pinned" and can be ranked. The observed
   model is compared with the requested id without the prefix; the reported provider is `Groq`.
-* Errors: 429 → rate limited (Retry-After header, else the "try again in 1h2m3s" hint in the
-  message), 413 → bad request, 498 (capacity) → server error, as for OpenRouter otherwise.
+* Errors: 429, and any error coded `rate_limit_exceeded` (Groq also sends 413 "Request too large"
+  with that code right after a long answer), → rate limited (Retry-After header, else the "try
+  again in 1h2m3s" hint in the message); other 413s → bad request; 498 (capacity) → server error;
+  as for OpenRouter otherwise. The daily check counts prompt + requested output budget.
 * Rate limits: a 429's wait is honoured up to 24 h (`rate_limit_max_retry_after_s`) and pauses the
   whole run for that time, so a daily quota suspends a run instead of failing its jobs.
 

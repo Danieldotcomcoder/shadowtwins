@@ -142,9 +142,12 @@ class ChatCompletionsProvider(Provider):
             code = str(err.get("code") or "")
             status = resp.status_code if resp.status_code != 200 else (int(code) if code.isdigit() else 502)
             return CompletionResult(ok=False, http_status=resp.status_code, latency_ms=latency,
-                                    error_category=status_category(status, msg), error_message=msg,
+                                    error_category=self.classify_error(status, err, msg), error_message=msg,
                                     retry_after_s=retry_after(resp, msg), raw={"error": err} if err else None)
         return self.parse_completion(data, resp.status_code, latency)
+
+    def classify_error(self, status: int, err: dict[str, Any], message: str) -> ErrorCategory:
+        return status_category(status, message)
 
     def parse_completion(self, data: dict[str, Any], status: int, latency_ms: float) -> CompletionResult:
         choices = data.get("choices") or []
