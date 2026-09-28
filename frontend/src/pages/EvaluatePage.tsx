@@ -33,6 +33,7 @@ export function EvaluatePage() {
   const endpoints = useEndpoints(modelId);
   const model = catalog.data?.models.find((m) => m.model_id === modelId) ?? null;
   const operator = meta.data?.auth?.operator === true;
+  const groqPlan = (meta.data?.providers?.groq as { plan?: string } | undefined)?.plan;
 
   useEffect(() => {
     setEndpoint("");
@@ -77,7 +78,8 @@ export function EvaluatePage() {
         <div>
           <h1>Evaluate a model</h1>
           <p>
-            Pick an OpenRouter model, choose how thoroughly to test it, and check the cost before anything is sent.
+            Pick a model from OpenRouter or Groq, choose how thoroughly to test it, and check the cost before anything
+            is sent.
             Every answer is scored exactly against a certified optimum — <Link to="/about">how scoring works</Link>.
           </p>
         </div>
@@ -151,20 +153,31 @@ export function EvaluatePage() {
               </div>
 
               <div className="grid-3">
-                <div className="field">
-                  <label htmlFor="endpoint">Provider endpoint</label>
-                  <select id="endpoint" className="input" value={endpoint} onChange={(e) => setEndpoint(e.target.value)}
-                    disabled={!modelId || endpoints.isLoading}>
-                    <option value="">Not pinned (unranked, fallbacks allowed)</option>
-                    {endpoints.data?.endpoints.map((e) => (
-                      <option key={e.slug} value={e.slug}>
-                        {e.provider_name} · {e.slug}{e.quantization && e.quantization !== "unknown" ? ` · ${e.quantization}` : ""} ·
-                        {" "}{fmtPerMillion(e.pricing.prompt)}/{fmtPerMillion(e.pricing.completion)}
-                      </option>
-                    ))}
-                  </select>
-                  <span className="xsmall faint">Ranked runs pin one endpoint and disable fallbacks.</span>
-                </div>
+                {model?.provider === "groq" ? (
+                  <div className="field">
+                    <span className="label">Provider</span>
+                    <span className="small">Groq, directly</span>
+                    <span className="xsmall faint">
+                      Groq serves its own models: no endpoint to pin, no fallbacks.
+                      {groqPlan === "free" && " Free plan: $0, but each model has daily limits; runs wait for the reset."}
+                    </span>
+                  </div>
+                ) : (
+                  <div className="field">
+                    <label htmlFor="endpoint">Provider endpoint</label>
+                    <select id="endpoint" className="input" value={endpoint} onChange={(e) => setEndpoint(e.target.value)}
+                      disabled={!modelId || endpoints.isLoading}>
+                      <option value="">Not pinned (unranked, fallbacks allowed)</option>
+                      {endpoints.data?.endpoints.map((e) => (
+                        <option key={e.slug} value={e.slug}>
+                          {e.provider_name} · {e.slug}{e.quantization && e.quantization !== "unknown" ? ` · ${e.quantization}` : ""} ·
+                          {" "}{fmtPerMillion(e.pricing.prompt)}/{fmtPerMillion(e.pricing.completion)}
+                        </option>
+                      ))}
+                    </select>
+                    <span className="xsmall faint">Ranked runs pin one endpoint and disable fallbacks.</span>
+                  </div>
+                )}
                 <div className="field">
                   <label htmlFor="limit">Spending limit (USD)</label>
                   <input id="limit" className="input num" inputMode="decimal" value={limit}

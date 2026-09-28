@@ -51,7 +51,8 @@ export function AboutPage() {
           <h2>Integrity</h2>
           <ul className="plain-list small">
             <li>Every ranked certificate is reproduced by an independent verifier before release.</li>
-            <li>Ranked runs pin one provider endpoint with fallbacks disabled; the reported provider must match.</li>
+            <li>Ranked OpenRouter runs pin one provider endpoint with fallbacks disabled; the reported provider must
+              match. Groq models are served by Groq itself, with no fallbacks.</li>
             <li>The leaderboard lists the latest eligible run, never the best of several.</li>
             <li>Invalid or poor answers are never retried; only transport and server failures are, with a fixed policy.</li>
             <li>Novelty is <strong>unconfirmed</strong>. The pack is public and may appear in training data; no contamination

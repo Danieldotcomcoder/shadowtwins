@@ -28,6 +28,7 @@ from . import catalog, costs, events
 from .context import AppContext
 from .db import jdump, jload, now, tx
 from .profiles import PROFILE_BY_ID, compatibility, output_budget, request_params
+from .providers.groq import groq_model_id
 
 MODES: dict[RunMode, dict[str, Any]] = {
     RunMode.QUICK_CHECK: {"split": "practice", "repetitions": 1, "track": "quick_check"},
@@ -79,6 +80,8 @@ async def plan(ctx: AppContext, conn: sqlite3.Connection, spec: RunSpec, pack_id
                          (pack["pack_id"],)).fetchall()
     endpoint = None
     endpoint_error = None
+    if spec.provider and provider == "groq":
+        raise RunError(400, "Groq serves its models itself; there is no endpoint to pin")
     if spec.provider:
         eps, endpoint_error = await catalog.endpoints(ctx, conn, spec.model_id)
         endpoint = next((e for e in eps if e.slug == spec.provider), None)
@@ -101,6 +104,8 @@ async def plan(ctx: AppContext, conn: sqlite3.Connection, spec: RunSpec, pack_id
         blocking.append("model pricing is unknown; an explicit unranked override is required")
     if provider == "openrouter" and not ctx.settings.openrouter_configured:
         blocking.append("OPENROUTER_API_KEY is not configured on the server")
+    if provider == "groq" and not ctx.settings.groq_configured:
+        blocking.append("GROQ_API_KEY is not configured on the server")
     if est["max_per_call_usd"] is not None and spec.spend_limit_usd < est["max_per_call_usd"]:
         blocking.append(f"spend limit ${spec.spend_limit_usd:.4f} is below one call's reservation "
                         f"${est['max_per_call_usd']:.4f}")
@@ -110,7 +115,7 @@ async def plan(ctx: AppContext, conn: sqlite3.Connection, spec: RunSpec, pack_id
         not_ranked.append("quick check uses unranked practice instances")
     if model.is_mock:
         not_ranked.append("mock provider (test double)")
-    if endpoint is None:
+    if endpoint is None and provider == "openrouter":  # Groq serves directly: nothing to fall back to
         not_ranked.append("no pinned provider endpoint (fallbacks cannot be disabled)")
     if not est["pricing_known"]:
         not_ranked.append("pricing unknown (unranked override)")
@@ -135,6 +140,10 @@ async def create(ctx: AppContext, conn: sqlite3.Connection, spec: RunSpec, pack_
     endpoint = catalog.endpoint_from_dict(p["endpoint"]) if p["endpoint"] else None
     profile = PROFILE_BY_ID[spec.profile_id]
     params, settings_record = request_params(model, profile, endpoint, p["prompt_tokens_estimate"])
+    fixed = ctx.providers[p["provider"]].fixed_params(model)
+    if fixed:
+        params |= fixed
+        settings_record["provider_params"] = fixed
     pack = conn.execute("SELECT * FROM packs WHERE pack_id=?", (p["pack"]["pack_id"],)).fetchone()
     module = ctx.module(pack["benchmark_id"])
     versions = {**module.metadata().versions, "suite": SUITE_VERSION, "contracts": CONTRACTS_VERSION,
@@ -289,8 +298,9 @@ def observed_consistency(conn: sqlite3.Connection, run: sqlite3.Row) -> dict[str
     if ep and providers:
         provider_ok = all(p.lower() == (ep.get("provider_name") or "").lower() for p in providers)
     unreported = any(r["provider_name"] is None for r in rows)
-    base = run["model_id"].split(":")[0]
-    model_ok = all(m == run["model_id"] or m.startswith(base) for m in models) if models else None
+    requested = groq_model_id(run["model_id"]) if run["provider"] == "groq" else run["model_id"]
+    base = requested.split(":")[0]
+    model_ok = all(m == requested or m.startswith(base) for m in models) if models else None
     return {"observed_providers": providers, "observed_models": models,
             "provider_matches_pin": provider_ok, "model_matches_request": model_ok,
             "provider_unreported_on_some_responses": unreported}

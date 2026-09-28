@@ -27,7 +27,7 @@ function OperatorDialog() {
           <Dialog.Title asChild><h2>Operator access</h2></Dialog.Title>
           <Dialog.Description className="small dim" style={{ marginTop: 6 }}>
             Anyone can browse results. Starting and controlling runs needs operator access. The server's
-            OpenRouter key never reaches the browser. The operator token is a run-control password; once
+            provider API keys never reach the browser. The operator token is a run-control password; once
             entered (or opened through a login link) it is remembered in this browser until you forget it.
           </Dialog.Description>
           <dl className="kv" style={{ marginTop: 14 }}>

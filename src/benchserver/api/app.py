@@ -187,6 +187,7 @@ def meta(request: Request, ctx: Ctx, conn: Conn) -> S.Meta:
         benchmarks=[registry.get(b).metadata().model_dump() for b in SUITE_BENCHMARKS],
         auth={"mode": ctx.settings.auth_mode, "operator": ok, "reason": why},
         providers={"openrouter": {"configured": ctx.settings.openrouter_configured},
+                   "groq": {"configured": ctx.settings.groq_configured, "plan": ctx.settings.groq_plan},
                    "mock": {"enabled": "mock" in ctx.providers}},
         packs=_pack_summaries(conn),
         profiles=[S.Profile(**p.to_dict()) for p in PROFILES],

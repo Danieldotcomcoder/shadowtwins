@@ -38,10 +38,13 @@ class RetryPolicy:
     base_delay_s: float = 2.0
     max_delay_s: float = 60.0
     # Rate limits (429) are usually per-minute windows, so they get a slower, longer schedule
-    # (15 s, 30 s, 60 s, 120 s, 120 s) and pause the whole run's dispatch for the same time.
+    # (15 s, 30 s, 60 s, 120 s, 120 s) and pause the whole run's dispatch for the same time. A provider's
+    # Retry-After is honoured up to a day, so a daily quota (e.g. Groq's free plan) makes the run wait
+    # for the reset instead of failing its jobs.
     rate_limit_max_attempts: int = 6
     rate_limit_base_delay_s: float = 15.0
     rate_limit_max_delay_s: float = 120.0
+    rate_limit_max_retry_after_s: float = 86400.0
 
     def delay(self, attempt_number: int, retry_after_s: float | None = None) -> float:
         d = min(self.max_delay_s, self.base_delay_s * (2 ** max(0, attempt_number - 1)))
@@ -52,7 +55,7 @@ class RetryPolicy:
     def rate_limit_delay(self, attempt_number: int, retry_after_s: float | None = None) -> float:
         d = min(self.rate_limit_max_delay_s, self.rate_limit_base_delay_s * (2 ** max(0, attempt_number - 1)))
         if retry_after_s is not None:
-            d = max(d, min(retry_after_s, self.rate_limit_max_delay_s * 5))
+            d = max(d, min(retry_after_s, self.rate_limit_max_retry_after_s))
         return d
 
 
@@ -64,6 +67,9 @@ class Settings:
     frontend_dist: Path
     openrouter_api_key: str | None = field(default=None, repr=False)
     openrouter_base_url: str = "https://openrouter.ai/api/v1"
+    groq_api_key: str | None = field(default=None, repr=False)
+    groq_base_url: str = "https://api.groq.com/openai/v1"
+    groq_plan: str = "free"  # free | developer: whether Groq bills this account (see providers/groq.py)
     operator_token: str | None = field(default=None, repr=False)
     auth_mode: str = "local"  # token | local | open | readonly
     enable_mock_provider: bool = False
@@ -83,6 +89,10 @@ class Settings:
     def openrouter_configured(self) -> bool:
         return bool(self.openrouter_api_key)
 
+    @property
+    def groq_configured(self) -> bool:
+        return bool(self.groq_api_key)
+
 
 def load_settings(**overrides: object) -> Settings:
     data_dir = Path(os.environ.get("ST_DATA_DIR", str(ROOT / "data")))
@@ -95,6 +105,9 @@ def load_settings(**overrides: object) -> Settings:
         frontend_dist=Path(os.environ.get("ST_FRONTEND_DIST", str(ROOT / "frontend" / "dist"))),
         openrouter_api_key=os.environ.get("OPENROUTER_API_KEY") or None,
         openrouter_base_url=os.environ.get("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1"),
+        groq_api_key=os.environ.get("GROQ_API_KEY") or None,
+        groq_base_url=os.environ.get("GROQ_BASE_URL", "https://api.groq.com/openai/v1"),
+        groq_plan=(os.environ.get("GROQ_PLAN") or "free").strip().lower(),
         operator_token=token,
         auth_mode=mode,
         enable_mock_provider=_bool("ST_ENABLE_MOCK_PROVIDER", False),
@@ -106,6 +119,8 @@ def load_settings(**overrides: object) -> Settings:
     values.update(overrides)
     if values["auth_mode"] not in {"token", "local", "open", "readonly"}:
         raise ValueError("ST_AUTH_MODE must be token, local, open or readonly")
+    if values["groq_plan"] not in {"free", "developer"}:
+        raise ValueError("GROQ_PLAN must be free or developer")
     if values["auth_mode"] == "token" and not values.get("operator_token"):
         raise ValueError("ST_AUTH_MODE=token requires ST_OPERATOR_TOKEN")
     return Settings(**values)  # type: ignore[arg-type]

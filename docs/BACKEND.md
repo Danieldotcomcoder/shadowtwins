@@ -41,14 +41,14 @@ charged again; logged), `retry_failed`, `set_spend_limit`.
   migration 0002). A completed answer —
   valid, invalid, refused or truncated — is never retried. `401`/`402` pause the run; other 4xx
   fail the job.
-* Exactly-once execution across OpenRouter is **not** claimed.
+* Exactly-once execution across a remote API is **not** claimed.
 
 ## Costs
 
 Before dispatch the worker reserves a worst case per call: `(panel max tokens × 1.25 + 64) × prompt
 price + output budget × max(completion, internal reasoning price) + request fee`. Dispatch stops
 (`budget_stopped`) when `spent + reserved + next reservation` would exceed the limit. Reported
-OpenRouter `usage.cost` replaces the reservation; if absent, cost is estimated from usage tokens
+OpenRouter `usage.cost` replaces the reservation; if absent (always for Groq), cost is estimated from usage tokens
 (`cost_source = estimated`); ambiguous attempts are charged their full reservation
 (`reserved_uncertain`). Unknown pricing blocks a run unless the operator sets the explicit
 unranked override. Cost and latency never enter quality scores.
@@ -63,8 +63,30 @@ unranked override. Cost and latency never enter quality scores.
 * Recorded per attempt: request body (provider-neutral, no headers), generation id, reported
   provider and model, finish reasons, usage (incl. reasoning tokens), cost and latency. Reasoning
   text is not stored (only its length).
-* Ranked eligibility requires: ranked pack, non-mock model, pinned endpoint, known pricing, a
-  compatible profile, a completed run, and no response whose reported provider contradicts the pin.
+* Ranked eligibility requires: ranked pack, non-mock model, pinned endpoint (OpenRouter), known
+  pricing, a compatible profile, a completed run, and no response whose reported provider
+  contradicts the pin.
+
+## Groq
+
+* Enabled only when `GROQ_API_KEY` is set (Groq's catalog needs the key). Model ids are
+  `groq:<groq id>`; routing is by that prefix and the prefix is stripped on the wire.
+* Catalog: `GET /openai/v1/models` gives name, context, max completion tokens, list prices, sampling
+  parameters and a `reasoning` feature flag. Inactive models and non-text models (speech, TTS) are
+  dropped. Reasoning efforts per family: GPT-OSS `low|medium|high` (always reasons), Qwen 3
+  `none|default|low|medium|high`; other reasoning models: efforts not checked.
+* Pricing follows `GROQ_PLAN`: `free` → $0 (list price kept in the description), `developer` → list
+  prices. Groq reports no per-request cost, so cost is computed from reported usage.
+* Requests: `max_tokens` → `max_completion_tokens`, `reasoning.effort` → `reasoning_effort`. For
+  reasoning models other than GPT-OSS the run also sends `reasoning_format: "parsed"` (recorded in
+  the run as `settings.provider_params`); otherwise their reasoning would arrive inside the answer
+  in `<think>` tags and fail the strict parser. GPT-OSS returns reasoning separately by default.
+* No endpoints, no fallbacks: Groq runs are not marked "not pinned" and can be ranked. The observed
+  model is compared with the requested id without the prefix; the reported provider is `Groq`.
+* Errors: 429 → rate limited (Retry-After header, else the "try again in 1h2m3s" hint in the
+  message), 413 → bad request, 498 (capacity) → server error, as for OpenRouter otherwise.
+* Rate limits: a 429's wait is honoured up to 24 h (`rate_limit_max_retry_after_s`) and pauses the
+  whole run for that time, so a daily quota suspends a run instead of failing its jobs.
 
 ## Profiles (`prof-*-2`)
 

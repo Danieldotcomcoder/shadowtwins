@@ -14,7 +14,7 @@ Suite 1 contains one benchmark, so the overall score equals the Shadow Twins sco
 ## Run it (one container)
 
 ```bash
-cp .env.example .env            # set OPENROUTER_API_KEY and ST_OPERATOR_TOKEN
+cp .env.example .env            # set OPENROUTER_API_KEY (and/or GROQ_API_KEY) and ST_OPERATOR_TOKEN
 docker compose up -d            # or:
 docker run -d --name shadowtwins -p 127.0.0.1:8000:8000 -v shadowtwins-data:/data \
   --env-file .env --stop-timeout 40 shadowtwins:0.1.0
@@ -23,8 +23,9 @@ docker run -d --name shadowtwins -p 127.0.0.1:8000:8000 -v shadowtwins-data:/dat
 Build the image first with `docker build -t shadowtwins:0.1.0 .`. `ST_OPERATOR_TOKEN` is simply a
 password you make up (for example `python -c "import secrets;print(secrets.token_urlsafe(24))"`); it
 unlocks starting runs. Sign in once with `http://127.0.0.1:8000/#token=<your token>` (or click
-**Viewer** in the header and paste it). The API key
-stays on the server. Data, logs and backups live in the `/data` volume. Operations (configuration,
+**Viewer** in the header and paste it). API keys
+stay on the server. With `GROQ_API_KEY` set, Groq models (free plan by default) appear next to
+OpenRouter's, marked **Groq**. Data, logs and backups live in the `/data` volume. Operations (configuration,
 auth modes, backup/restore, upgrades): [docs/OPERATIONS.md](docs/OPERATIONS.md).
 
 To try it without an OpenRouter key, add `ST_ENABLE_MOCK_PROVIDER=1` to `.env`. The `mock/*` test
@@ -49,7 +50,7 @@ just docker-accept                       # build the image and run the 10 contai
 
 ```
 packs/ (frozen, hashed, independently verified)
-  └─ benchcore.packs ──► SQLite (WAL) ◄── worker (leases, retries, cost reservations) ──► OpenRouter / mock
+  └─ benchcore.packs ──► SQLite (WAL) ◄── worker (leases, retries, cost reservations) ──► OpenRouter / Groq / mock
                             │                         └─ benchmark module: prompt → parse → validate → score
                             └──► FastAPI (/api, SSE) ──► React + three.js UI (same origin)
 ```
@@ -59,7 +60,7 @@ packs/ (frozen, hashed, independently verified)
 | `src/shadowtwins` | rules, strict parser, evaluator, exhaustive solver, replays, generator, token panel, packs |
 | `src/stverify` | independent verifier (plain loops, no engine imports); `shadowtwins-verify` CLI |
 | `src/benchcore` | benchmark interface, generic contracts, registry, aggregation and bootstrap intervals |
-| `src/benchserver` | API, durable worker, OpenRouter and mock adapters, exports, supervisor, CLI |
+| `src/benchserver` | API, durable worker, OpenRouter, Groq and mock adapters, exports, supervisor, CLI |
 | `frontend/` | React/TypeScript/Vite, React Three Fiber views, Playwright suite |
 | `contracts/` | JSON Schemas, OpenAPI, and formal fixtures covering every answer category |
 | `packs/` | `shadowtwins-ranked-v1` (30), `-practice-v1` (9), `-dev-v1` (30, research only) |

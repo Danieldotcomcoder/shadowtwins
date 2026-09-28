@@ -43,7 +43,8 @@ def configure_logging(settings: Settings, component: str) -> None:
             log_dir / f"{component}.log", maxBytes=5_000_000, backupCount=3, encoding="utf-8"))
     except OSError:
         pass
-    redact = _RedactSecrets([settings.openrouter_api_key or "", settings.operator_token or ""])
+    redact = _RedactSecrets([settings.openrouter_api_key or "", settings.groq_api_key or "",
+                             settings.operator_token or ""])
     for h in handlers:
         h.setFormatter(logging.Formatter(_LOG_FORMAT))
         h.addFilter(redact)

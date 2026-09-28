@@ -3,6 +3,9 @@ import { useMemo, useState } from "react";
 import type { CatalogModel } from "../../api/types";
 import { fmtPerMillion, fmtTokens } from "../../lib/format";
 
+// OpenRouter is the default catalog; other providers are marked so the same model id is never ambiguous.
+const PROVIDER_BADGE: Record<string, string> = { groq: "Groq" };
+
 function CompatDot({ m, profileId }: { m: CatalogModel; profileId: string }) {
   const c = m.compat?.find((x) => x.profile_id === profileId);
   if (!c) return null;
@@ -22,6 +25,7 @@ function Row({ m, profileId, favorite, onToggleFav }: {
         <div className="mp-name">
           {m.name}
           {m.is_mock && <span className="badge mock">mock</span>}
+          {PROVIDER_BADGE[m.provider] && <span className="badge info">{PROVIDER_BADGE[m.provider]}</span>}
         </div>
         <div className="mp-id mono">{m.model_id}</div>
       </div>
@@ -59,7 +63,7 @@ export function ModelPicker({ models, favorites, recents, value, onChange, profi
     Number(a.is_mock) - Number(b.is_mock) || a.name.localeCompare(b.name)), [models]);
   const item = (m: CatalogModel, group: string) => (
     <Command.Item key={`${group}-${m.model_id}`} value={`${group}:${m.model_id}`}
-      keywords={[m.name, m.model_id]} onSelect={() => onChange(m.model_id)}
+      keywords={[m.name, m.model_id, m.provider]} onSelect={() => onChange(m.model_id)}
       data-selected-model={value === m.model_id ? "true" : undefined}>
       <Row m={m} profileId={profileId} favorite={favorites.includes(m.model_id)} onToggleFav={onToggleFav} />
     </Command.Item>

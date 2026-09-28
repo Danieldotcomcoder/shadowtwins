@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useRunAction } from "../../api/hooks";
 import type { RunEvent, RunItem, RunSummary } from "../../api/types";
-import { fmtMs, fmtPct, fmtScore, fmtTokens, fmtUsd } from "../../lib/format";
+import { fmtDuration, fmtMs, fmtPct, fmtScore, fmtTokens, fmtUsd } from "../../lib/format";
 import { categoryLabel, STATE_LABEL, TIER_NAME } from "../../lib/labels";
 import { ErrorBox, IntervalBar, Stat, StateBadge } from "../ui/ui";
 
@@ -178,14 +178,14 @@ export function ItemsTable({ runId, items, showRep }: { runId: string; items: Ru
 const EVENT_TEXT: Record<string, (p: Record<string, unknown>) => string> = {
   job_completed: (p) => `${p.instance_id}: ${p.valid ? `valid, score ${fmtScore(p.score as number)}` : `invalid (${categoryLabel(p.category as string)})`}`,
   job_started: (p) => `${p.instance_id}: request sent (attempt ${p.attempt})`,
-  job_retry_scheduled: (p) => `${p.instance_id}: ${p.category}, retry in ${p.delay_s}s`,
+  job_retry_scheduled: (p) => `${p.instance_id}: ${p.category}, retry in ${fmtDuration(p.delay_s as number)}`,
   job_failed: (p) => `${p.instance_id}: failed (${p.category}; ${p.reason})`,
   job_uncertain: (p) => `${p.instance_id ?? `job ${p.job_id}`}: outcome uncertain — ${p.note ?? p.category}`,
   job_recovered: (p) => `job ${p.job_id}: ${p.action}`,
   jobs_requeued: (p) => `${(p.job_ids as unknown[]).length} ${p.from} jobs requeued — ${p.note}`,
   run_state: (p) => `run ${STATE_LABEL[p.state as string] ?? p.state}${p.reason ? `: ${p.reason}` : ""}`,
   spend_limit: (p) => `spending limit set to ${fmtUsd(p.spend_limit_usd as number)}`,
-  run_cooldown: (p) => `provider rate limit: pausing new requests for ${Math.round(p.seconds as number)} s`,
+  run_cooldown: (p) => `provider rate limit: pausing new requests for ${fmtDuration(p.seconds as number)}`,
   run_created: (p) => `run created with ${p.jobs} jobs`,
 };
 
