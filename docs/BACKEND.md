@@ -86,7 +86,7 @@ unranked override. Cost and latency never enter quality scores.
 * Errors: 429, and any error coded `rate_limit_exceeded` (Groq also sends 413 "Request too large"
   with that code right after a long answer), → rate limited (Retry-After header, else the "try
   again in 1h2m3s" hint in the message); other 413s → bad request; 498 (capacity) → server error;
-  as for OpenRouter otherwise. The daily check counts prompt + requested output budget.
+  as for OpenRouter otherwise.
 * Rate limits: a 429's wait is honoured up to 24 h (`rate_limit_max_retry_after_s`) and pauses the
   whole run for that time, so a daily quota suspends a run instead of failing its jobs.
 

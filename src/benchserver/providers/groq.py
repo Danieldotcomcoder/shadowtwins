@@ -16,8 +16,8 @@
   field. GPT-OSS returns reasoning separately by default.
 * Free-plan limits (per model: requests and tokens per minute and per day) surface as 429s with a
   Retry-After, and right after a long answer also as 413 "Request too large" with the same
-  ``rate_limit_exceeded`` code; both are rate limits the runner waits out. The daily check counts the
-  requested output budget (prompt + ``max_completion_tokens``), not only tokens used.
+  ``rate_limit_exceeded`` code; both are rate limits the runner waits out. The daily quota refills
+  continuously; how Groq sizes a request against it is undocumented (see docs/KNOWN_ISSUES.md).
 """
 
 from __future__ import annotations
