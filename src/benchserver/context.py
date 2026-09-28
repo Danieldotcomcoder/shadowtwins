@@ -15,6 +15,8 @@ from benchcore.interface import BenchmarkModule
 from . import db
 from .config import Settings
 from .providers.base import Provider
+from .providers.groq import PREFIX as GROQ_PREFIX
+from .providers.groq import GroqProvider
 from .providers.mock import MockProvider
 from .providers.openrouter import OpenRouterProvider
 
@@ -28,6 +30,10 @@ class AppContext:
                 settings.openrouter_api_key, settings.openrouter_base_url,
                 timeout_s=settings.http_timeout_s, connect_timeout_s=settings.connect_timeout_s,
                 app_title=settings.app_title)}
+            if settings.groq_configured:  # Groq's catalog needs the key, so no key means no Groq models
+                providers["groq"] = GroqProvider(
+                    settings.groq_api_key, settings.groq_base_url, plan=settings.groq_plan,
+                    timeout_s=settings.http_timeout_s, connect_timeout_s=settings.connect_timeout_s)
             if settings.enable_mock_provider:
                 providers["mock"] = MockProvider(self.answer_book)
         self.providers = providers
@@ -37,8 +43,13 @@ class AppContext:
         return db.connect(self.settings.db_path)
 
     # --- providers -----------------------------------------------------------------------------
-    def provider_name_for(self, model_id: str) -> str:
-        return "mock" if model_id.startswith("mock/") else "openrouter"
+    @staticmethod
+    def provider_name_for(model_id: str) -> str:
+        if model_id.startswith("mock/"):
+            return "mock"
+        if model_id.startswith(GROQ_PREFIX):
+            return "groq"
+        return "openrouter"
 
     def provider_for(self, model_id: str) -> Provider:
         name = self.provider_name_for(model_id)

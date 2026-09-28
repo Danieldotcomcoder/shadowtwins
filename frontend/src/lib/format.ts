@@ -30,6 +30,17 @@ export function fmtTokens(v: number | null | undefined): string {
   return String(v);
 }
 
+/** A wait in seconds, readable at any scale: "45 s", "12 min", "3 h 20 min". */
+export function fmtDuration(seconds: number | null | undefined): string {
+  if (seconds === null || seconds === undefined || !Number.isFinite(seconds)) return "—";
+  const s = Math.max(0, Math.round(seconds));
+  if (s < 90) return `${s} s`;
+  const m = Math.round(s / 60);
+  if (m < 90) return `${m} min`;
+  const h = Math.floor(m / 60);
+  return m % 60 ? `${h} h ${m % 60} min` : `${h} h`;
+}
+
 export function fmtMs(v: number | null | undefined): string {
   if (v === null || v === undefined) return "—";
   if (v < 1000) return `${Math.round(v)} ms`;

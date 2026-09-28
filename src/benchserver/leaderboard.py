@@ -52,7 +52,8 @@ def leaderboard(conn: sqlite3.Connection, track: str = "standard", profile_id: s
         meta = s["model_meta"] or {}
         rows.append({
             "model_id": s["model_id"], "model_name": (meta.get("model") or {}).get("name", s["model_id"]),
-            "endpoint": s["endpoint"], "provider_name": (meta.get("endpoint") or {}).get("provider_name"),
+            "endpoint": s["endpoint"],
+            "provider_name": (meta.get("endpoint") or {}).get("provider_name") or ("Groq" if s["provider"] == "groq" else None),
             "profile_id": s["profile_id"], "track": s["track"],
             "overall": sc["overall"], "shadow_twins": sc["overall"],
             "tiers": sc["tiers"], "interval_95": sc["interval_95"],

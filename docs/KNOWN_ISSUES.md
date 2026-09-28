@@ -13,6 +13,17 @@
   answer can take 20–40 minutes) and occasionally end a response with a provider error, which is
   retried.
 
+## Groq free plan (2026-09-29)
+
+* Daily token limits (200,000 per model for GPT-OSS and Qwen) fit only a handful of thinking-model
+  answers (30–50k tokens each), so a 9-item quick check may span two days; the run waits for the
+  reset by itself. Whether Groq's daily check counts the requested output budget (65,536) or only
+  tokens used is not documented; if it counts the budget, the last requests of a day are refused
+  early and wait for the reset.
+* Reasoning efforts per model family are hard-coded from Groq's documentation (the catalog only
+  flags reasoning); a new reasoning family gets no effort check and is sent
+  `reasoning_format: "parsed"`.
+
 ## Open release gates
 
 * **Live pilot not run.** No OpenRouter key was available; see `docs/research/PILOT_REPORT.md`.

@@ -10,12 +10,14 @@ both gracefully on SIGTERM.
 | Variable | Default | Meaning |
 |---|---|---|
 | `OPENROUTER_API_KEY` | — | Server-side key. Never sent to the browser, logged, stored or exported. |
+| `GROQ_API_KEY` | — | Optional. Adds Groq models (`groq:<model id>`) to the catalog. Same handling as the OpenRouter key. |
+| `GROQ_PLAN` | `free` | `free` (nothing billed: prices $0, list price shown in the model description) or `developer` (billed at Groq's list prices) |
 | `ST_OPERATOR_TOKEN` | — | Bearer token for run controls. Setting it selects `token` auth. |
 | `ST_AUTH_MODE` | `token` if a token is set, else `local` | `token`, `local` (loopback clients only), `readonly`, or `open` (explicit; only behind a trusted boundary) |
 | `ST_DATA_DIR` | `/data` | SQLite database, logs, backups |
 | `ST_WORKER_CONCURRENCY` | `8` | Global in-flight request limit (each run also has its own limit) |
 | `ST_ENABLE_MOCK_PROVIDER` | `0` | Adds `mock/*` test doubles (never ranked) |
-| `ST_CATALOG_TTL_S` | `3600` | OpenRouter catalog cache lifetime |
+| `ST_CATALOG_TTL_S` | `3600` | Model catalog cache lifetime (per provider) |
 | `ST_HTTP_TIMEOUT_S` | `3600` | Per-request read timeout (a long thinking answer on a slow free endpoint can take ~40 min) |
 | `ST_LEASE_TTL_S` | `90` | Job lease; heartbeats extend it every 5 s |
 
@@ -23,6 +25,21 @@ Inside Docker, browser requests do not come from the container's loopback interf
 auth leaves the UI read-only. Set `ST_OPERATOR_TOKEN`, publish the port on `127.0.0.1`, and put a
 TLS reverse proxy in front for any remote access. Public viewers can be allowed with
 `ST_AUTH_MODE=token`: reads are public and controls need the token.
+
+## Groq
+
+With `GROQ_API_KEY` set, Groq's active text models appear in the model picker with a **Groq** badge
+and ids like `groq:openai/gpt-oss-120b` (the prefix keeps them apart from the same model on
+OpenRouter). Groq serves its own models, so there is no endpoint to pin and no fallback; a Standard
+or Repeated run on Groq can be ranked.
+
+The free plan is limited per model, per minute and per day (for GPT-OSS and Qwen, 8,000 tokens per
+minute and 200,000 per day at the time of writing; see console.groq.com/settings/limits). A single
+long thinking answer is allowed (a 33,562-token answer was accepted under the 8,000-token minute
+limit), but a thinking model uses 30–50k tokens per puzzle, so only a handful of puzzles per model
+fit into a day. When a limit is hit, Groq answers 429 with the wait time; the run pauses dispatch
+for exactly that long (up to a day) and continues by itself after the reset. Nothing is billed on
+the free plan; set `GROQ_PLAN=developer` after upgrading so spending limits use real prices.
 
 ## Signing in
 

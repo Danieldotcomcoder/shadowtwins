@@ -52,7 +52,7 @@ PROFILES: tuple[RunProfile, ...] = (
         description="reasoning.effort = low, up to 65,536 output tokens (reasoning included; capped at "
                     "the model's own limit).",
         max_tokens=65536, temperature=None, reasoning={"effort": "low"}, requires=("reasoning",),
-        enforcement="Effort is a request; OpenRouter maps it per model, so equal labels do not imply "
+        enforcement="Effort is a request that each provider maps per model, so equal labels do not imply "
                     "equal reasoning budgets across models.",
     ),
     RunProfile(
@@ -60,7 +60,7 @@ PROFILES: tuple[RunProfile, ...] = (
         description="reasoning.effort = high, up to 131,072 output tokens (reasoning included; capped "
                     "at the model's own limit).",
         max_tokens=131072, temperature=None, reasoning={"effort": "high"}, requires=("reasoning",),
-        enforcement="Effort is a request; OpenRouter maps it per model, so equal labels do not imply "
+        enforcement="Effort is a request that each provider maps per model, so equal labels do not imply "
                     "equal reasoning budgets across models.",
     ),
 )

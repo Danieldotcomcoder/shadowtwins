@@ -137,6 +137,10 @@ class Provider(ABC):
     @abstractmethod
     async def complete(self, req: CompletionRequest) -> CompletionResult: ...
 
+    def fixed_params(self, model: ModelInfo) -> dict[str, Any]:
+        """Provider-specific parameters every request for ``model`` must carry (recorded per run)."""
+        return {}
+
     async def reconcile(self, generation_id: str) -> dict[str, Any] | None:
         """Look up provider-side facts for a generation, where the provider supports it."""
         return None

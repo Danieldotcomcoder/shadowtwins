@@ -87,7 +87,8 @@ export function RunPage() {
           </h1>
           <p>
             {MODE_LABEL[r.mode] ?? r.mode} · profile <strong>{r.profile.label}</strong>
-            {r.endpoint ? <> · pinned endpoint <span className="mono">{r.endpoint}</span></> : " · endpoint not pinned"}
+            {r.provider === "groq" ? " · served directly by Groq"
+              : r.endpoint ? <> · pinned endpoint <span className="mono">{r.endpoint}</span></> : " · endpoint not pinned"}
             {" · "}pack <span className="mono">{r.pack_id}</span>
           </p>
           {r.state_reason && <p className="small">{r.state_reason}</p>}

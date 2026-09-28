@@ -102,3 +102,19 @@ Append-only. Each entry: date, owner, decision, reason, affected prompts, eviden
 * **Affected:** all new runs; results of `prof-*-1` runs are not comparable with `prof-*-2` and are
   separated by profile version. **Evidence:** attempts 50–51 of `run_20260927_160658_a517a3`;
   `test_profile_compatibility_uses_real_limits`.
+
+## 2026-09-29 — P5 — Groq as a second provider
+* **Decision:** add a Groq adapter (`GROQ_API_KEY`, `GROQ_PLAN=free|developer`). Groq models are
+  namespaced `groq:<id>` because their ids collide with OpenRouter's; the provider is chosen by that
+  prefix. Groq has no endpoints or fallbacks, so its runs can be ranked. Pricing is $0 on the free
+  plan and the list price on the developer plan. Non-GPT-OSS reasoning models are sent
+  `reasoning_format: "parsed"` so reasoning never lands in the answer. A 429's Retry-After is now
+  honoured up to 24 h (was capped at 10 min), so a daily quota pauses a run until the reset. The
+  OpenRouter adapter's HTTP/error/response handling moved to a shared `openai_compat` base
+  (behaviour unchanged). Parser, scoring, packs and profiles unchanged.
+* **Reason:** the owner asked for Groq support on its free plan. Checked live on 2026-09-29: the
+  free plan limits GPT-OSS/Qwen to 8,000 tokens/min and 200,000/day, yet accepted a single
+  `max_completion_tokens = 65,536` request and returned a 33,562-token answer (finish `stop`), so
+  profile budgets need no Groq-specific cap; Qwen 3.8 returns `<think>` text inside `content` unless
+  asked otherwise.
+* **Affected:** operators, catalog, runner. **Evidence:** `tests/benchserver/test_groq.py`.
