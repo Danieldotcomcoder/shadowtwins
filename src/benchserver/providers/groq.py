@@ -15,7 +15,9 @@
   ``reasoning_format = "parsed"`` for them (see ``fixed_params``), which returns reasoning in a separate
   field. GPT-OSS returns reasoning separately by default.
 * Free-plan limits (per model: requests and tokens per minute and per day) surface as 429s with a
-  Retry-After; the runner waits them out.
+  Retry-After, and right after a long answer also as 413 "Request too large" with the same
+  ``rate_limit_exceeded`` code; both are rate limits the runner waits out. The daily check counts the
+  requested output budget (prompt + ``max_completion_tokens``), not only tokens used.
 """
 
 from __future__ import annotations
@@ -24,7 +26,7 @@ from typing import Any
 
 import httpx
 
-from .base import CompletionRequest, CompletionResult, EndpointInfo, ModelInfo
+from .base import CompletionRequest, CompletionResult, EndpointInfo, ErrorCategory, ModelInfo
 from .openai_compat import ChatCompletionsProvider
 
 PREFIX = "groq:"
@@ -143,6 +145,15 @@ class GroqProvider(ChatCompletionsProvider):
             body["reasoning_effort"] = reasoning["effort"]
         body.update(params)
         return body
+
+    def classify_error(self, status: int, err: dict[str, Any], message: str) -> ErrorCategory:
+        # Right after a long answer, Groq's per-minute limiter also refuses the next request with
+        # 413 "Request too large ... tokens per minute", carrying the same rate_limit_exceeded code as
+        # its 429s. It clears once the window moves on (observed live), so it is a rate limit to wait
+        # out, not a malformed request.
+        if err.get("code") == "rate_limit_exceeded":
+            return ErrorCategory.RATE_LIMITED
+        return super().classify_error(status, err, message)
 
     def parse_completion(self, data: dict[str, Any], status: int, latency_ms: float) -> CompletionResult:
         result = super().parse_completion(data, status, latency_ms)

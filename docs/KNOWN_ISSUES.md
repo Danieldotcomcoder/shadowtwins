@@ -16,10 +16,14 @@
 ## Groq free plan (2026-09-29)
 
 * Daily token limits (200,000 per model for GPT-OSS and Qwen) fit only a handful of thinking-model
-  answers (30–50k tokens each), so a 9-item quick check may span two days; the run waits for the
-  reset by itself. Whether Groq's daily check counts the requested output budget (65,536) or only
-  tokens used is not documented; if it counts the budget, the last requests of a day are refused
-  early and wait for the reset.
+  answers (15–30k tokens each), so a 9-item quick check spans two or more days; the run waits for
+  the reset by itself. Groq's daily check counts the requested output budget: a request needs
+  prompt + 65,536 tokens of daily headroom to start ("Used 163126, Requested 66164"), so roughly the
+  last third of each day's quota cannot start a full-budget request. Observed on the first live
+  run (gpt-oss-20b): scores 100 and 88.9, one invalid answer, one answer truncated at 65,536 tokens.
+* Right after a long answer, Groq's per-minute limiter answers the next request with 429 and then
+  413 "Request too large", both coded `rate_limit_exceeded`; both are treated as rate limits and
+  waited out (the first live run had failed two items on the 413 before this was handled).
 * Reasoning efforts per model family are hard-coded from Groq's documentation (the catalog only
   flags reasoning); a new reasoning family gets no effort check and is sent
   `reasoning_format: "parsed"`.

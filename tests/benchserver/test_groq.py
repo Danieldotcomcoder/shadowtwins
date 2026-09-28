@@ -111,18 +111,25 @@ def test_request_is_translated_to_groq_parameters():
     assert res.raw is not None and res.raw["choices"][0]["message"]["reasoning"] == "<40 chars omitted>"
 
 
-@pytest.mark.parametrize(("status", "headers", "message", "category", "retry_after"), [
-    (429, {"retry-after": "37"}, "Rate limit reached on tokens per minute (TPM)", ErrorCategory.RATE_LIMITED, 37.0),
-    (429, {}, "Rate limit reached on tokens per day (TPD): Limit 200000, Used 199000. Please try again in 1h2m3.5s.",
-     ErrorCategory.RATE_LIMITED, 3723.5),
-    (413, {}, "Request too large for model on tokens per minute (TPM)", ErrorCategory.BAD_REQUEST, None),
-    (401, {}, "Invalid API Key", ErrorCategory.AUTH, None),
-    (498, {}, "Capacity exceeded for the flex tier", ErrorCategory.SERVER, None),
+LIMIT = "rate_limit_exceeded"
+
+
+# Messages as Groq's free plan returned them on 2026-09-29 (organization id removed).
+@pytest.mark.parametrize(("status", "headers", "code", "message", "category", "retry_after"), [
+    (429, {"retry-after": "14"}, LIMIT, "Rate limit reached for model `openai/gpt-oss-20b` on tokens per minute "
+     "(TPM): Limit 8000, Used 7907, Requested 1868. Please try again in 13.3125s.", ErrorCategory.RATE_LIMITED, 14.0),
+    (429, {}, LIMIT, "Rate limit reached for model `openai/gpt-oss-20b` on tokens per day (TPD): Limit 200000, "
+     "Used 163126, Requested 66164. Please try again in 3h30m53.279999999s.", ErrorCategory.RATE_LIMITED, 12653.28),
+    # right after a long answer: 413 with the rate-limit code clears once the minute window moves on
+    (413, {}, LIMIT, "Request too large for model `openai/gpt-oss-20b` on tokens per minute (TPM): Limit 8000, "
+     "Requested 27328, please reduce your message size and try again.", ErrorCategory.RATE_LIMITED, None),
+    (413, {}, "context_length_exceeded", "Please reduce the length of the messages.", ErrorCategory.BAD_REQUEST, None),
+    (401, {}, "invalid_api_key", "Invalid API Key", ErrorCategory.AUTH, None),
+    (498, {}, "capacity_exceeded", "Capacity exceeded for the flex tier", ErrorCategory.SERVER, None),
 ])
-def test_errors_are_normalized(status, headers, message, category, retry_after):
+def test_errors_are_normalized(status, headers, code, message, category, retry_after):
     def handler(request: httpx.Request) -> httpx.Response:
-        return httpx.Response(status, headers=headers,
-                              json={"error": {"message": message, "type": "tokens", "code": "rate_limit_exceeded"}})
+        return httpx.Response(status, headers=headers, json={"error": {"message": message, "type": "tokens", "code": code}})
 
     req = CompletionRequest(model_id="groq:openai/gpt-oss-20b", messages=[{"role": "user", "content": "hi"}],
                             params={"max_tokens": 100}, endpoint=None, allow_fallbacks=False)
