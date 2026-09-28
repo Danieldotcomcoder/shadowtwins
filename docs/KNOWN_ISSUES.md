@@ -16,11 +16,14 @@
 ## Groq free plan (2026-09-29)
 
 * Daily token limits (200,000 per model for GPT-OSS and Qwen) fit only a handful of thinking-model
-  answers (15–30k tokens each), so a 9-item quick check spans two or more days; the run waits for
-  the reset by itself. Groq's daily check counts the requested output budget: a request needs
-  prompt + 65,536 tokens of daily headroom to start ("Used 163126, Requested 66164"), so roughly the
-  last third of each day's quota cannot start a full-budget request. Observed on the first live
-  run (gpt-oss-20b): scores 100 and 88.9, one invalid answer, one answer truncated at 65,536 tokens.
+  answers (15–65k tokens each), so a 9-item quick check spans more than a day; the run waits by
+  itself. The daily quota refills continuously (a refusal's wait matched the time to refill the
+  shortfall at 200,000 tokens per 24 h), not at midnight. How Groq sizes a request for the daily
+  check is not documented and was inconsistent: one refusal reported "Used 163126, Requested 66164"
+  (prompt + full budget), yet a later full-budget request started with less headroom, and another
+  refusal reported "Requested 1078". First live run (gpt-oss-20b, standard profile, 5 of 9 items
+  before the day's quota ran out): scores 100 and 88.9, one invalid answer, two answers truncated at
+  65,536 tokens; $0.
 * Right after a long answer, Groq's per-minute limiter answers the next request with 429 and then
   413 "Request too large", both coded `rate_limit_exceeded`; both are treated as rate limits and
   waited out (the first live run had failed two items on the 413 before this was handled).
