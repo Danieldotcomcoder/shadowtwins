@@ -16,7 +16,7 @@ named owner; changes by anyone else need a decision entry in `docs/DECISIONS.md`
 | `packs/` | P2 | Frozen after release; corrections create new pack versions |
 | `docs/research/` | P2 (P5 appends pilot report) | |
 | `frontend/` | P4 | |
-| `Dockerfile`, `docker/`, `.github/`, release docs | P5 | |
+| `Dockerfile`, `docker/`, release docs | P5 | |
 | `pyproject.toml`, `uv.lock`, `frontend/pnpm-lock.yaml` | P1 → P5 at integration | Root lockfiles: one owner at a time |
 
 Later prompts:

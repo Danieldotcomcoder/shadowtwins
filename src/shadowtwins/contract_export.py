@@ -1,7 +1,7 @@
 """Export versioned JSON Schemas and authoritative development fixtures for P2-P4.
 
 ``contracts/schemas/*.schema.json`` are generated from the Pydantic models; their sha256 hashes are
-recorded in ``contracts/VERSIONS.json`` and checked in CI (``shadowtwins export-contracts --check``).
+recorded in ``contracts/VERSIONS.json`` and checked by ``just check`` (``shadowtwins export-contracts --check``).
 ``contracts/fixtures/`` holds formal fixture instances, verified certificates, sample raw responses
 covering every answer category, and the evaluations and replays they produce. Fixture data is
 formal test material, never benchmark results.

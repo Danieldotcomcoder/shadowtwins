@@ -40,8 +40,8 @@
   shapes.
 * **No independent review** of P1–P5 has been performed. Every handoff records self-review only.
 * **Notion tracker not synchronized** (`docs/HUB_SYNC.md`).
-* **CI workflow not yet executed on GitHub.** `.github/workflows/ci.yml` mirrors the local
-  commands that were run; the repository has no remote.
+* **No CI.** The GitHub Actions workflow was removed (2026-10-03). Checks run only locally
+  (`just check`, `just frontend`, `just docker-accept`); nothing runs automatically on push.
 
 ## Benchmark
 

@@ -3,7 +3,6 @@
 **A compact, exactly scored LLM benchmark for 3D spatial reasoning, with a web app to run models
 and inspect every answer in 3D.**
 
-[![CI](../../actions/workflows/ci.yml/badge.svg)](../../actions/workflows/ci.yml)
 ![Python 3.12](https://img.shields.io/badge/python-3.12-3776AB?logo=python&logoColor=white)
 ![Node 22](https://img.shields.io/badge/node-22-5FA04E?logo=nodedotjs&logoColor=white)
 ![Docker](https://img.shields.io/badge/docker-single_container-2496ED?logo=docker&logoColor=white)
@@ -19,7 +18,7 @@ many tunnel-entrance connections as possible. Every answer is scored `100 × v /
 - **Exact scoring.** No LLM judges, no rubric, and scores never come from a renderer. Partial
   credit is the fraction of the proven optimum the answer reaches.
 - **Independently verifiable.** Every certificate is re-derived by a separate verifier (`stverify`)
-  that imports no engine code. CI re-verifies all shipped packs.
+  that imports no engine code. `just check` re-verifies all shipped packs.
 - **Small and cheap.** 30 ranked instances, each prompt under 800 tokens on every tokenizer in the
   panel.
 - **Full provenance.** Each run records pack hash, rule/parser/evaluator/solver versions, pinned
@@ -186,7 +185,7 @@ ST_ENABLE_MOCK_PROVIDER=1 uv run benchserver dev    # API + embedded worker on :
 pnpm --dir frontend dev                             # UI on :5173 (proxies /api)
 ```
 
-Checks (the same ones CI runs):
+Checks (run locally; there is no CI):
 
 ```bash
 just check          # ruff, pyright, pytest, contract drift, independent certificate re-verification
